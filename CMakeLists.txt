@@ -1,44 +1,21 @@
 cmake_minimum_required(VERSION 3.17)
-project(A2McgRayTracer)
 
-set(CMAKE_CXX_STANDARD 14)
-# SDL2 contains their own main function which can cause conflict with ours. It can be disabled with this command.
-add_definitions(-DSDL_MAIN_HANDLED)
+set(CMAKE_CXX_STANDARD  14)
+set(PROJECT_NAME        A2McgRayTracer)
+set(MAIN_SOURCE_DIR     ${CMAKE_SOURCE_DIR}/src/Main.cpp)
 
-# Set up the mcg Framework.
-include(vendor/MCG_GFX/CMakeLists.txt)
+project(${PROJECT_NAME})
 
-# Let's us use the header files within our program.
-link_directories(${CMAKE_SOURCE_DIR}/include/SDL2)
-
-
-# includes to make "#include" management much easier.
-# E.g.: #include "../../../vendor/SDL/include/SDL.h" could appear.
-include_directories(A2McgRayTracer
-        vendor
-        vendor/GLM
-        vendor/SDL2/include
+add_executable(${PROJECT_NAME}
+        ${MAIN_SOURCE_DIR}
         )
 
-add_executable(A2McgRayTracer
-        src/main.cpp
-        )
+# Add all third-party libraries
+add_subdirectory(vendor)
 
-# Look for the SDL2 library recursively within the specified folder.
-find_library(SDL_LIB SDL2 ${CMAKE_SOURCE_DIR}/vendor/SDL2/x86)
-
-# Tell us what it found and assigned to the variable.
-message(STATUS "SDL Lib Found at: " ${SDL_LIB})
-
-# Add to the path so that the executable can compile correctly.
-target_link_libraries(A2McgRayTracer
-        ${SDL_LIB}
-        McgFramework
-        )
-
-# Copies over all of library files that are required to build the program.
-add_custom_command(TARGET A2McgRayTracer POST_BUILD
+# Copies over all of SDL2 library dlls that are required for the program to run.
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/vendor/SDL2/x86/dll"
-        "$<TARGET_FILE_DIR:A2McgRayTracer>"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
         )
