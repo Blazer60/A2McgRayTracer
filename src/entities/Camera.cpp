@@ -40,10 +40,11 @@ std::vector<Ray> Camera::generateRays()
             rays.push_back(generateSingleRay(i, j));
         }
     }
+    return rays;
 }
 
 Ray Camera::generateSingleRay(const int &x, const int &y)
 {
-    return Ray();
+    return {};
 }
 
