@@ -19,5 +19,5 @@ Entity::Entity(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm
 Entity::Entity() :
     mPosition(0),
     mRotation(0),
-    mScale(0)
+    mScale(1)
 {}
