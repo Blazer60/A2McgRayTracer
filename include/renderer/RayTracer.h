@@ -15,6 +15,8 @@
 #include "Sphere.h"
 #include "Entity.h"
 
+#include "MCG_GFX_Lib.h"
+
 #include <memory>
 #include <vector>
 
@@ -26,8 +28,9 @@
 class RayTracer
 {
 public:
-    RayTracer() = default;
+    explicit RayTracer(const glm::ivec2 &mWindowSize);
 
+    void updateAndHold();
     void update();
     void render();
 
@@ -35,8 +38,7 @@ protected:
     std::shared_ptr<Camera> mMainCamera;
     std::vector<Entity*> mEntities;
     std::vector<Actor*> mPhysicalObjects;
-
-
+    glm::ivec2 mWindowSize;
 };
 
 

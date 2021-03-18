@@ -7,8 +7,12 @@
  * Initial Version: 18/03/2021
  */
 
-
 #include "RayTracer.h"
+
+RayTracer::RayTracer(const glm::ivec2 &mWindowSize) : mWindowSize(mWindowSize)
+{
+    if(!mcg::init(mWindowSize)) { throw std::exception(); }
+}
 
 void RayTracer::update()
 {
@@ -20,5 +24,14 @@ void RayTracer::update()
 
 void RayTracer::render()
 {
+    mcg::setBackground(glm::vec3(1,0,0));
 
+
+}
+
+void RayTracer::updateAndHold()
+{
+    update();
+    render();
+    mcg::showAndHold();
 }
