@@ -13,8 +13,12 @@
 #define A2MCGRAYTRACER_CAMERA_H
 
 #include "Entity.h"
-#include "glm.hpp"
 #include <Ray.h>
+
+#include "glm.hpp"
+#include "GLM/gtc/matrix_transform.hpp"
+#include "GLM/gtx/transform.hpp"
+#include "GLM/vec3.hpp"
 
 #include <vector>
 
@@ -41,7 +45,7 @@ protected:
     float mAspectRatio;
     float mFovHalfAngle;
 private:
-    Ray generateSingleRay(const int &x, const int &y);
+    Ray generateSingleRay(const glm::ivec2 &pixelPos);
 };
 
 
