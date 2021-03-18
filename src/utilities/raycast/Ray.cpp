@@ -10,5 +10,5 @@
 
 #include "Ray.h"
 
-Ray::Ray(const glm::vec3 &mPosition, const glm::vec3 &mNormal) : mPosition(mPosition), mNormal(mNormal)
+Ray::Ray(const glm::vec3 &mPosition, const glm::vec3 &mDirection) : mPosition(mPosition), mDirection(mDirection)
 {}

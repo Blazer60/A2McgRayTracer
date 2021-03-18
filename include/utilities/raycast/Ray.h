@@ -36,10 +36,10 @@ class Ray
 {
 private:
     glm::vec3 mPosition;
-    glm::vec3 mNormal;
+    glm::vec3 mDirection;
 public:
     Ray() = default;
-    Ray(const glm::vec3 &mPosition, const glm::vec3 &mNormal);
+    Ray(const glm::vec3 &mPosition, const glm::vec3 &mDirection);
 };
 
 
