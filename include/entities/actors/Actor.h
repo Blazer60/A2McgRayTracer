@@ -20,7 +20,7 @@
  * @author Ryan Purse
  * @version 1.0.0 [Initial Version: 18/03/2021]
  */
-class Actor : Entity
+class Actor : public Entity
 {
 public:
     /**
