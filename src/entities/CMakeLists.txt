@@ -2,7 +2,7 @@ add_library(Entities
         Entity.cpp
         actors/Actor.cpp
         actors/Sphere.cpp
-        )
+        Camera.cpp ../../include/entities/Camera.h)
 
 # Link the relevent include file to the entities library so that the source file can see it.
 target_include_directories(Entities PUBLIC
