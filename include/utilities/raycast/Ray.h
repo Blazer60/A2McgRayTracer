@@ -15,17 +15,7 @@
 
 #include "glm.hpp"
 
-/**
- * Hit information for when a ray has collided with an object in world space.
- * @author Ryan Purse
- * @version 1.0.0 [Initial Version: 18/03/2021]
- */
-struct hitInfo
-{
-    bool hit;
-    glm::vec3 colour;
-    glm::vec3 hitNormal;
-};
+
 
 /**
  * Holds information about a ray vector in world space.
@@ -42,5 +32,17 @@ public:
     Ray(const glm::vec3 &mPosition, const glm::vec3 &mDirection);
 };
 
+/**
+ * Hit information for when a ray has collided with an object in world space.
+ * @author Ryan Purse
+ * @version 1.0.0 [Initial Version: 18/03/2021]
+ */
+struct hitInfo
+{
+    bool hit;
+    glm::vec3 hitPosition;
+    glm::vec3 colour;
+    glm::vec3 hitNormal;
+};
 
 #endif //A2MCGRAYTRACER_RAY_H
