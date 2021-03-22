@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    RayTracer renderer({ 400, 400 });
+    RayTracer renderer({ 400, 400 });  // 640x480, 800x600
     renderer.updateAndHold();
     return 0;
 }
