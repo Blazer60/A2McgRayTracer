@@ -13,6 +13,8 @@
 #define A2MCGRAYTRACER_ENTITY_H
 
 #include "glm.hpp"
+#include "GLM/gtc/quaternion.hpp"
+#include "GLM/gtx/quaternion.hpp"
 
 /**
  * An entity is an object the can live in world space.
@@ -24,11 +26,11 @@ class Entity
 {
 protected:
     glm::vec3 mPosition;
-    glm::vec3 mRotation;  // The will need to change.
+    glm::quat mRotation;
     glm::vec3 mScale;
 public:
     Entity();
-    Entity(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale);
+    Entity(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &mScale);
 
     virtual void update(float deltaTime) = 0;
 

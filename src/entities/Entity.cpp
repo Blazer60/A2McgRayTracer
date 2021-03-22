@@ -10,14 +10,14 @@
 #include "Entity.h"
 
 
-Entity::Entity(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale) :
-    mPosition(mPosition),
-    mRotation(mRotation),
+Entity::Entity(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &mScale) :
+    mPosition(position),
+    mRotation(eulerRotation),
     mScale(mScale)
 {}
 
 Entity::Entity() :
     mPosition(0),
-    mRotation(0),
+    mRotation(glm::vec3(0)),
     mScale(1)
 {}

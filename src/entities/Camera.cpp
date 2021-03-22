@@ -10,9 +10,9 @@
 
 #include "Camera.h"
 
-Camera::Camera(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale,
+Camera::Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
                const glm::ivec2 &mScreenResolution, float mAspectRatio, float mFovHalfAngle) :
-               Entity(mPosition, mRotation, mScale),
+               Entity(mPosition, eulerAngle, mScale),
                mScreenResolution(mScreenResolution),
                mAspectRatio(mAspectRatio),
                mFovHalfAngle(mFovHalfAngle)
@@ -72,8 +72,11 @@ Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
     farPlane /= farPlane.w;
 
     // Convert from eye space to world space. This uses the inverse view matrix.
-    nearPlane += mPosition;     // THIS IS WRONG
-    farPlane += mPosition;      // THIS IS WRONG (you need to apply a rotation as well.)
+    glm::mat4 rotationMatrix = glm::toMat4(-mRotation);
+    glm::mat4 translationMatrix = glm::translate(-mPosition);
+
+    nearPlane = translationMatrix * rotationMatrix * nearPlane;
+    farPlane = translationMatrix * rotationMatrix * farPlane;
 
 
     // Convert to ray format where we have an origin and then a direction

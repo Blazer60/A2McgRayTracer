@@ -18,6 +18,8 @@
 #include "glm.hpp"
 #include "GLM/gtc/matrix_transform.hpp"
 #include "GLM/gtx/transform.hpp"
+#include "GLM/gtc/quaternion.hpp"
+#include "GLM/gtx/quaternion.hpp"
 #include "GLM/vec3.hpp"
 
 #include <vector>
@@ -33,7 +35,7 @@ class Camera : public Entity
 {
 public:
     explicit Camera(const glm::ivec2 &mScreenResolution);
-    Camera(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale,
+    Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
            const glm::ivec2 &mScreenResolution, float mAspectRatio, float mFovHalfAngle);
 
     void update(float deltaTime) override;
