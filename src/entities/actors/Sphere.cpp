@@ -13,7 +13,7 @@
 Sphere::Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
                float mRadius)
                : Actor(mPosition, mRotation, mScale, colour),
-               mRadius(mRadius), mIsBobbing(false)
+               mRadius(mRadius), mIsBobbing(true)
 {
     mStaticPos = mPosition;
     mTime = 0;
@@ -21,7 +21,7 @@ Sphere::Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm
     mFrequency = 1;
 }
 
-Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(false)
+Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(true)
 {
     mStaticPos = glm::vec3(0);
 }

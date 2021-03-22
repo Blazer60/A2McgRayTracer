@@ -7,6 +7,7 @@
  * Initial Version: 18/03/2021
  */
 
+#include <iostream>
 #include "RayTracer.h"
 
 RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
@@ -23,18 +24,21 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
                              22.5f);
     mEntities.push_back(mMainCamera);
 
-    mPhysicalObjects.push_back(new Sphere({0.f, 0.f, 10.f},
-                                          {0.f, 0.f, 0.f},
-                                          {1.f, 1.f, 1.f},
-                                          {1.f, 0.f, 0.f},
-                                          1));
+    auto *s = new Sphere({0.f, 0.f, 10.f},
+                         {0.f, 0.f, 0.f},
+                         {1.f, 1.f, 1.f},
+                         {1.f, 0.f, 0.f},
+    1);
+
+    mPhysicalObjects.push_back(s);
+    mEntities.push_back(s);
 }
 
 void RayTracer::update()
 {
     for (auto &entity : mEntities)
     {
-        entity->update(1);
+        entity->update(0.1f);
     }
 }
 
@@ -89,4 +93,14 @@ void RayTracer::updateAndHold()
     update();
     render();
     mcg::showAndHold();
+}
+
+void RayTracer::run()
+{
+    while (mcg::processFrame())
+    {
+        update();
+        render();
+        std::cout << "Frame out" << std::endl;
+    }
 }

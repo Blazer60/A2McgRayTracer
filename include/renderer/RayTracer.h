@@ -30,6 +30,7 @@ class RayTracer
 public:
     explicit RayTracer(const glm::ivec2 &mWindowSize);
 
+    void run();
     void updateAndHold();
     void update();
     void render();
