@@ -31,6 +31,11 @@ public:
     Entity(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale);
 
     virtual void update(float deltaTime) = 0;
+
+    const glm::vec3 &getPosition() const
+    {
+        return mPosition;
+    }
 };
 
 
