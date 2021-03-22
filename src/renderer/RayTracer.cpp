@@ -18,7 +18,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 
     // Create some entities so that we can if things have worked.
     mMainCamera = new Camera({0.f, 0.f, 0.f},
-                             {0.f, 0.f, 0.f},
+                             {0.f, 0.f, -1.57f},
                              {1.f, 1.f, 1.f},
                              mWindowSize,
                              22.5f);
@@ -28,7 +28,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
                          {0.f, 0.f, 0.f},
                          {1.f, 1.f, 1.f},
                          {1.f, 0.f, 0.f},
-    1);
+                         1);
 
     mPhysicalObjects.push_back(s);
     mEntities.push_back(s);
