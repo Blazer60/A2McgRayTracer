@@ -9,3 +9,10 @@
 
 
 #include "Geometry.h"
+
+glm::vec3 getClosestPoint(const Ray &ray, const glm::vec3 &point)
+{
+    glm::vec3 delta = point - ray.mPosition;  // This is used in multiple places.
+    glm::vec3 distanceOnRay = glm::dot((delta), ray.mDirection) * ray.mDirection;
+    return delta - distanceOnRay;
+}
