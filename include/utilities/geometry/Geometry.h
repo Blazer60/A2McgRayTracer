@@ -18,6 +18,6 @@
 #include "glm.hpp"
 
 glm::vec3 getClosestPoint(const Ray &ray, const glm::vec3 &point);
-glm::vec3 raySphereIntersection(const Ray &ray, const Sphere &sphere);
+hitInfo raySphereIntersection(const Ray &ray, const Sphere &sphere);
 
 #endif //A2MCGRAYTRACER_GEOMETRY_H
