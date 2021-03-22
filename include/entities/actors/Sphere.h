@@ -30,6 +30,11 @@ public:
     void update(float deltaTime) override;
     hitInfo isIntersecting(Ray ray) override;
 
+    float getRadius() const
+    {
+        return mRadius;
+    }
+
 protected:
     float mRadius;
 
