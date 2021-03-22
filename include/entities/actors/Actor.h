@@ -32,6 +32,11 @@ public:
 
     virtual hitInfo isIntersecting(Ray ray) = 0;
 
+    const glm::vec3 &getColour() const
+    {
+        return mColour;
+    }
+
 protected:
     glm::vec3 mColour;  // defined here as hitInfo requires a colour to return.
 };
