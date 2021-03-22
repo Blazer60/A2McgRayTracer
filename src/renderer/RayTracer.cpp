@@ -16,10 +16,18 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
 
     // Create some entities so that we can if things have worked.
-    mMainCamera = new Camera(mWindowSize);
+    mMainCamera = new Camera({0.f, 0.f, 0.f},
+                             {0.f, 0.f, 0.f},
+                             {1.f, 1.f, 1.f},
+                             mWindowSize,
+                             22.5f);
     mEntities.push_back(mMainCamera);
 
-    mPhysicalObjects.push_back(new Sphere({0.f, 0.f, 20.f}, {}, {1.f, 1.f, 1.f}, {1.f, 0.f, 0.f}, 1));
+    mPhysicalObjects.push_back(new Sphere({0.f, 0.f, 10.f},
+                                          {0.f, 0.f, 0.f},
+                                          {1.f, 1.f, 1.f},
+                                          {1.f, 0.f, 0.f},
+                                          1));
 }
 
 void RayTracer::update()
@@ -32,7 +40,7 @@ void RayTracer::update()
 
 void RayTracer::render()
 {
-    mcg::setBackground(glm::vec3(1,0,0));
+    //mcg::setBackground(glm::vec3(1,0,0));
     std::vector<Ray> rays = mMainCamera->generateRays();
 
     // Loop through all of the pixels assigning them their colour.

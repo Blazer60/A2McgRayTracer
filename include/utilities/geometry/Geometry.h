@@ -19,5 +19,8 @@
 glm::vec3 getClosestPoint(const Ray &ray, const glm::vec3 &point);
 hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const float &radius);
 
+float normalise(const float &x, const float &lB, const float &uB);
+float map(const float &x, const float &xLb, const float &xUb, const float &yLb, const float &yUb);
+
 
 #endif //A2MCGRAYTRACER_GEOMETRY_H

@@ -43,3 +43,14 @@ hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const floa
             hitNormal
     };
 }
+
+float normalise(const float &x, const float &lB, const float &uB)
+{
+    return (x - lB) / (uB - lB);
+}
+
+float map(const float &x, const float &xLb, const float &xUb, const float &yLb, const float &yUb)
+{
+    const float xN = normalise(x, xLb, xUb);
+    return yLb + xN * (yUb - yLb);
+}

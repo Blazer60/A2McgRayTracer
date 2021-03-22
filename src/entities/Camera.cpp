@@ -11,12 +11,14 @@
 #include "Camera.h"
 
 Camera::Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
-               const glm::ivec2 &mScreenResolution, float mAspectRatio, float mFovHalfAngle) :
+               const glm::ivec2 &mScreenResolution, const float &mFovHalfAngle) :
                Entity(mPosition, eulerAngle, mScale),
                mScreenResolution(mScreenResolution),
-               mAspectRatio(mAspectRatio),
+               mAspectRatio(static_cast<float>(mScreenResolution.x) / static_cast<float>(mScreenResolution.y)),
                mFovHalfAngle(mFovHalfAngle)
-{}
+{
+
+}
 
 Camera::Camera(const glm::ivec2 &mScreenResolution) : Entity(),
     mScreenResolution(mScreenResolution),
@@ -45,8 +47,14 @@ std::vector<Ray> Camera::generateRays()
 Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
 {
     // Generate coords for the start point of the ray and the and the end point of the ray.
-    const float xNormal = static_cast<float>(pixelPos.x) / static_cast<float>(mScreenResolution.x);
-    const float yNormal = static_cast<float>(pixelPos.y) / static_cast<float>(mScreenResolution.y);
+    const float xNormal = map(static_cast<float>(pixelPos.x),
+                              0.f, static_cast<float>(mScreenResolution.x),
+                              -1.f, 1.f);
+    const float yNormal = map(static_cast<float>(pixelPos.y),
+                              0.f, static_cast<float>(mScreenResolution.y),
+                              -1.f, 1.f);
+//    const float xNormal = static_cast<float>(pixelPos.x) / static_cast<float>(mScreenResolution.x);
+//    const float yNormal = static_cast<float>(pixelPos.y) / static_cast<float>(mScreenResolution.y);
 
     // So far, the view frustum is just a cube.
     glm::vec4 nearPlane(xNormal, yNormal, - 1, 1);

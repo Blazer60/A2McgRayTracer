@@ -13,7 +13,8 @@
 #define A2MCGRAYTRACER_CAMERA_H
 
 #include "Entity.h"
-#include <Ray.h>
+#include "Geometry.h"
+#include "Ray.h"
 
 #include "glm.hpp"
 #include "GLM/gtc/matrix_transform.hpp"
@@ -36,7 +37,7 @@ class Camera : public Entity
 public:
     explicit Camera(const glm::ivec2 &mScreenResolution);
     Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
-           const glm::ivec2 &mScreenResolution, float mAspectRatio, float mFovHalfAngle);
+           const glm::ivec2 &mScreenResolution, const float &mFovHalfAngle);
 
     void update(float deltaTime) override;
 
