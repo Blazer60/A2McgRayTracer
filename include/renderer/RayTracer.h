@@ -35,10 +35,11 @@ public:
     void render();
 
 protected:
-    std::shared_ptr<Camera> mMainCamera;
+    Camera *mMainCamera;
     std::vector<Entity*> mEntities;
     std::vector<Actor*> mPhysicalObjects;
     glm::ivec2 mWindowSize;
+    std::vector<glm::vec3> mPixelBuffer;
 };
 
 

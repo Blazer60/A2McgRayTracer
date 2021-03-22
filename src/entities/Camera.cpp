@@ -31,7 +31,7 @@ void Camera::update(float deltaTime)
 
 std::vector<Ray> Camera::generateRays()
 {
-    std::vector<Ray> rays(mScreenResolution.x * mScreenResolution.y);
+    std::vector<Ray> rays;
     for (int i = 0; i < mScreenResolution.x; ++i)
     {
         for (int j = 0; j < mScreenResolution.y; ++j)

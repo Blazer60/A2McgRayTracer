@@ -13,11 +13,11 @@
 #define A2MCGRAYTRACER_GEOMETRY_H
 
 #include "Ray.h"
-#include "Sphere.h"
 
 #include "glm.hpp"
 
 glm::vec3 getClosestPoint(const Ray &ray, const glm::vec3 &point);
-hitInfo raySphereIntersection(const Ray &ray, const Sphere &sphere);
+hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const float &radius);
+
 
 #endif //A2MCGRAYTRACER_GEOMETRY_H

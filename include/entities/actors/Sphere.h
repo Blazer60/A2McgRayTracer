@@ -12,6 +12,8 @@
 #define A2MCGRAYTRACER_SPHERE_H
 
 #include "Actor.h"
+#include "Geometry.h"
+
 #include "glm.hpp"
 #include "GLM/gtc/matrix_transform.hpp"
 

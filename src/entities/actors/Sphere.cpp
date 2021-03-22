@@ -28,7 +28,9 @@ Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(false)
 
 hitInfo Sphere::isIntersecting(Ray ray)
 {
-    return {};
+    hitInfo hit = raySphereIntersection(ray, mPosition, mRadius);
+    if (hit.hit) { hit.colour = mColour; }
+    return hit;
 }
 
 void Sphere::update(float deltaTime)
