@@ -41,6 +41,8 @@ protected:
     std::vector<Actor*> mPhysicalObjects;
     glm::ivec2 mWindowSize;
     std::vector<glm::vec3> mPixelBuffer;
+
+    glm::vec3 trace(const Ray &ray);
 };
 
 

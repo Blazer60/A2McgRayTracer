@@ -18,7 +18,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 
     // Create some entities so that we can if things have worked.
     mMainCamera = new Camera({0.f, 0.f, 0.f},
-                             {0.f, 0.f, -1.57f},
+                             {0.f, 0.f, 0},
                              {1.f, 1.f, 1.f},
                              mWindowSize,
                              22.5f);
@@ -44,47 +44,21 @@ void RayTracer::update()
 
 void RayTracer::render()
 {
-    //mcg::setBackground(glm::vec3(1,0,0));
-    std::vector<Ray> rays = mMainCamera->generateRays();
-
-    // Loop through all of the pixels assigning them their colour.
-    for (int i = 0; i < rays.size() - 1; i++)
+    // Loop through each pixel coord pair on the screen.
+    for (int y = 0; y < mWindowSize.y; ++y)
     {
-        hitInfo closestHit{false};
-        closestHit.colour = glm::vec3 {0.f};
-        float closestHitLength(0);
-        // Get the colour that the ray interception returns
-        for (auto &actor : mPhysicalObjects)
+        for (int x = 0; x < mWindowSize.x; ++x)
         {
-            hitInfo cur = actor->isIntersecting(rays[i]);
-            if (cur.hit)
-            {
-                if (!closestHit.hit)
-                {
-                    closestHit = cur;
-                    closestHitLength = glm::length(closestHit.hitPosition - mMainCamera->getPosition());
-                }
-                else
-                {
-                    // compare to the previous hit to see if it is closer.
-                    if (glm::length(cur.hitPosition - mMainCamera->getPosition()) < closestHitLength)
-                    {
-                        closestHit = cur;
-                        closestHitLength = glm::length(closestHit.hitPosition - mMainCamera->getPosition());
-                    }
-                }
-            }
-        }
-        mPixelBuffer[i] = closestHit.colour;
-    }
+            glm::ivec2 pixelPosition(x, y);
+            // Create a ray from our camera
+            Ray ray = mMainCamera->generateSingleRay(pixelPosition);
 
-    for (int i = 0; i < mPixelBuffer.size() - 1; ++i)
-    {
-        glm::ivec2 pos = {
-                i % mWindowSize.x,
-                i / mWindowSize.x
-        };
-        mcg::drawPixel(pos, mPixelBuffer[i]);
+            // Cast it into the world to get our colour.
+            glm::vec3 colour = trace(ray);
+
+            // Draw the pixel to MCG pixel buffer.
+            mcg::drawPixel(pixelPosition, colour);
+        }
     }
 }
 
@@ -103,4 +77,34 @@ void RayTracer::run()
         render();
         std::cout << "Frame out" << std::endl;
     }
+}
+
+glm::vec3 RayTracer::trace(const Ray &ray)
+{
+    hitInfo closestHit{false};
+    closestHit.colour = glm::vec3 {0.f};
+    float closestHitLength(0);
+    // Get the colour that the ray interception returns
+    for (auto &actor : mPhysicalObjects)
+    {
+        hitInfo cur = actor->isIntersecting(ray);
+        if (cur.hit)
+        {
+            if (!closestHit.hit)
+            {
+                closestHit = cur;
+                closestHitLength = glm::length(closestHit.hitPosition - mMainCamera->getPosition());
+            }
+            else
+            {
+                // compare to the previous hit to see if it is closer.
+                if (glm::length(cur.hitPosition - mMainCamera->getPosition()) < closestHitLength)
+                {
+                    closestHit = cur;
+                    closestHitLength = glm::length(closestHit.hitPosition - mMainCamera->getPosition());
+                }
+            }
+        }
+    }
+    return closestHit.colour;
 }
