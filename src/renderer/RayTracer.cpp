@@ -81,6 +81,12 @@ void RayTracer::run()
 
 glm::vec3 RayTracer::trace(const Ray &ray)
 {
+    hitInfo hit = getHitInWorld(ray);
+    return hit.colour;
+}
+
+hitInfo RayTracer::getHitInWorld(const Ray &ray)
+{
     hitInfo closestHit{false};
     closestHit.colour = glm::vec3 {0.f};
     float closestHitLength(0);
@@ -106,5 +112,5 @@ glm::vec3 RayTracer::trace(const Ray &ray)
             }
         }
     }
-    return closestHit.colour;
+    return closestHit;
 }

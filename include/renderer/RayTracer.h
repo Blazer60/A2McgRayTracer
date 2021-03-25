@@ -43,6 +43,7 @@ protected:
     std::vector<glm::vec3> mPixelBuffer;
 
     glm::vec3 trace(const Ray &ray);
+    hitInfo getHitInWorld(const Ray &ray);
 };
 
 
