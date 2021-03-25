@@ -40,6 +40,7 @@ public:
            const glm::ivec2 &mScreenResolution, const float &mFovHalfAngle);
 
     void update(float deltaTime) override;
+    void updateMat();
 
     std::vector<Ray> generateRays();
     Ray generateSingleRay(const glm::ivec2 &pixelPos);
@@ -49,7 +50,13 @@ protected:
     float mAspectRatio;
     float mFovHalfAngle;
 private:
+    glm::mat4 mRotationMat;
+    glm::mat4 mTranslationMat;
+    glm::mat4 mInvProjectionMat;
 
+    glm::mat4 mInvPrtMat;
+
+    void init();
 };
 
 
