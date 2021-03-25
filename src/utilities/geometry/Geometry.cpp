@@ -20,27 +20,26 @@ glm::vec3 getClosestPoint(const Ray &ray, const glm::vec3 &point)
 
 hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const float &radius)
 {
-    float closestPointLength = glm::length(getClosestPoint(ray, point));
+    glm::vec3 delta = point - ray.mPosition;
+    float deltaDot = glm::dot(delta, ray.mDirection);  // Gives us the
+
+    const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
 
     // The ray did not intersect so we don't need to calculate the colour, position and hit normal.
-    if (closestPointLength > radius) { return {false, {}, {}, {} }; }
+    if (closestPoint > radius) { return { false, {}, {}, {} }; }
 
-    // work out the closest point of intersection.
-    glm::vec3 delta = point - ray.mPosition;
-    float s = glm::sqrt(radius * radius - closestPointLength * closestPointLength);
-    glm::vec3 distanceOnSphere = (glm::dot(delta, ray.mDirection) - s) * ray.mDirection;
-    glm::vec3 hitPosition = ray.mPosition + distanceOnSphere;
+    // Work out the position that the ray intercepted the sphere.
+    const float x = glm::sqrt(radius * radius - closestPoint * closestPoint);
+    glm::vec3 hitPosition = ray.mPosition + (deltaDot - x) * ray.mDirection;
 
-    // Work out the ray hit normal.
+    // Ray hit normal
     glm::vec3 hitNormal = glm::normalize(hitPosition - point);
 
-    // Then recursively work out the the colour but for now we'll return the colour immediately.
-
     return {
-            true,
-            hitPosition,
-            {},
-            hitNormal
+        true,
+        hitPosition,
+        {},
+        hitNormal
     };
 }
 
