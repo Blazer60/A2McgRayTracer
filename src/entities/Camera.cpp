@@ -34,11 +34,11 @@ void Camera::update(float deltaTime)
 std::vector<Ray> Camera::generateRays()
 {
     std::vector<Ray> rays;
-    for (int i = 0; i < mScreenResolution.x; ++i)
+    for (int j = 0; j < mScreenResolution.y; ++j)
     {
-        for (int j = 0; j < mScreenResolution.y; ++j)
+        for (int i = 0; i < mScreenResolution.x; ++i)
         {
-            rays.push_back(generateSingleRay({i, j}));
+            rays.push_back(generateSingleRay({i, j}));  // TODO: could be the wrong way round??
         }
     }
     return rays;
