@@ -30,7 +30,12 @@ Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(true)
 hitInfo Sphere::isIntersecting(Ray ray)
 {
     hitInfo hit = raySphereIntersection(ray, mPosition, mRadius);
-    if (hit.hit) { hit.colour = mColour; }
+    // Work out the colour depending on the hit normal.
+    if (hit.hit)
+    {
+        float intensity = glm::dot(hit.hitNormal, -ray.mDirection);
+        hit.colour = mColour * intensity;
+    }
     return hit;
 }
 

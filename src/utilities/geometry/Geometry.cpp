@@ -29,7 +29,7 @@ hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const floa
     glm::vec3 delta = point - ray.mPosition;
     float s = glm::sqrt(radius * radius - closestPointLength * closestPointLength);
     glm::vec3 distanceOnSphere = (glm::dot(delta, ray.mDirection) - s) * ray.mDirection;
-    glm::vec3 hitPosition = delta - distanceOnSphere;
+    glm::vec3 hitPosition = ray.mPosition + distanceOnSphere;
 
     // Work out the ray hit normal.
     glm::vec3 hitNormal = glm::normalize(hitPosition - point);
