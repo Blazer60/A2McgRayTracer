@@ -29,14 +29,39 @@ Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(true)
 
 hitInfo Sphere::isIntersecting(Ray ray)
 {
-    hitInfo hit = raySphereIntersection(ray, mPosition, mRadius);
-    // Work out the colour depending on the hit normal.
-    if (hit.hit)
-    {
-        float intensity = glm::dot(hit.hitNormal, -ray.mDirection);
-        hit.colour = mColour * intensity;
-    }
-    return hit;
+    glm::vec3 delta = mPosition - ray.mPosition;
+    float deltaDot = glm::dot(delta, ray.mDirection);  // Gives us the
+
+    const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
+
+    // The ray did not intersect so we don't need to calculate the colour, position and hit normal.
+    if (closestPoint > mRadius) { return { false, {}, {}, {} }; }
+
+    // Work out the position that the ray intercepted the sphere.
+    const float x = glm::sqrt(mRadius * mRadius - closestPoint * closestPoint);
+    glm::vec3 hitPosition = ray.mPosition + (deltaDot - x) * ray.mDirection;
+
+    // Ray hit normal
+    glm::vec3 hitNormal = glm::normalize(hitPosition - mPosition);
+
+    // Crude working out of the lighting.
+    float intensity = glm::dot(hitNormal, -ray.mDirection);
+    glm::vec3 colour = mColour * intensity;
+
+    return {
+            true,
+            hitPosition,
+            colour,
+            hitNormal
+    };
+//    hitInfo hit = raySphereIntersection(ray, mPosition, mRadius);
+//    // Work out the colour depending on the hit normal.
+//    if (hit.hit)
+//    {
+//        float intensity = glm::dot(hit.hitNormal, -ray.mDirection);
+//        hit.colour = mColour * intensity;
+//    }
+//    return hit;
 }
 
 void Sphere::update(float deltaTime)
