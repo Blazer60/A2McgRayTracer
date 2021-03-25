@@ -17,8 +17,8 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
 
     // Create some entities so that we can if things have worked.
-    mMainCamera = new Camera({0.f, 0.f, 0.f},
-                             {0.f, 0.f, 0},
+    mMainCamera = new Camera({0.f, 10.f, 0.f},
+                             {0.79f, 0.f, 0.f},
                              {1.f, 1.f, 1.f},
                              mWindowSize,
                              22.5f);

@@ -80,8 +80,8 @@ Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
     farPlane /= farPlane.w;
 
     // Convert from eye space to world space. This uses the inverse view matrix.
-    glm::mat4 rotationMatrix = glm::toMat4(-mRotation);
-    glm::mat4 translationMatrix = glm::translate(-mPosition);
+    glm::mat4 rotationMatrix = glm::toMat4(mRotation);
+    glm::mat4 translationMatrix = glm::translate(mPosition);
 
     nearPlane = translationMatrix * rotationMatrix * nearPlane;
     farPlane = translationMatrix * rotationMatrix * farPlane;
