@@ -32,6 +32,15 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 
     mPhysicalObjects.push_back(s);
     mEntities.push_back(s);
+
+    auto *s1 = new Sphere({1.f, 0.f, 10.f},
+                          {0.f, 0.f, 0.f},
+                          {1.f, 1.f, 1.f},
+                          {0.f, 1.f, 0.f},
+                          1);
+
+    mPhysicalObjects.push_back(s1);
+    mEntities.push_back(s1);
 }
 
 void RayTracer::update()
