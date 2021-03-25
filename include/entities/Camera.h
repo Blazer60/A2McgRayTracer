@@ -42,13 +42,14 @@ public:
     void update(float deltaTime) override;
 
     std::vector<Ray> generateRays();
+    Ray generateSingleRay(const glm::ivec2 &pixelPos);
 
 protected:
     glm::ivec2 mScreenResolution;
     float mAspectRatio;
     float mFovHalfAngle;
 private:
-    Ray generateSingleRay(const glm::ivec2 &pixelPos);
+
 };
 
 

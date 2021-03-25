@@ -52,7 +52,7 @@ Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
                               -1.f, 1.f);
     const float yNormal = map(static_cast<float>(pixelPos.y),
                               0.f, static_cast<float>(mScreenResolution.y),
-                              -1.f, 1.f);
+                              1.f, -1.f);
 //    const float xNormal = static_cast<float>(pixelPos.x) / static_cast<float>(mScreenResolution.x);
 //    const float yNormal = static_cast<float>(pixelPos.y) / static_cast<float>(mScreenResolution.y);
 
