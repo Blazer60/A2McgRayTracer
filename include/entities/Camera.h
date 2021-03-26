@@ -43,6 +43,8 @@ public:
     void updateMat();
 
     std::vector<Ray> generateRays();
+
+    /// Creates a ray based on the pixel position on the screen and the matrix transform of the camera.
     Ray generateSingleRay(const glm::ivec2 &pixelPos);
 
 protected:
@@ -56,6 +58,7 @@ private:
 
     glm::mat4 mInvPrtMat;
 
+    /// Generates the InvProjectionMat on creation
     void init();
 };
 

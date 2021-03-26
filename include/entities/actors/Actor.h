@@ -17,6 +17,7 @@
 
 /**
  * An object in world space that can be seen by the camera.
+ * Actors by default are set to pink.
  * @author Ryan Purse
  * @version 1.0.0 [Initial Version: 18/03/2021]
  */
@@ -38,7 +39,12 @@ public:
     }
 
 protected:
-    glm::vec3 mColour;  // defined here as hitInfo requires a colour to return.
+    /**
+     * @brief The colour of the object when a ray hits an object (only when no shading is applied
+     * E.g.: unlit).
+     * @paragraph It is defined here as hitInfo struct requires a colour to be returned.
+     */
+    glm::vec3 mColour;
 };
 
 

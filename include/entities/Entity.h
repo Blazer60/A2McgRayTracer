@@ -26,6 +26,11 @@ class Entity
 {
 protected:
     glm::vec3 mPosition;
+
+    /**
+     * The rotation is store as a quat but will typically be set
+     * through euler angles as it simpler to wrap our heads around.
+     */
     glm::quat mRotation;
     glm::vec3 mScale;
 public:

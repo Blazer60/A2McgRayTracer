@@ -36,13 +36,26 @@ public:
     void render();
 
 protected:
+    /// The Camera in which the Rays are generated from.
     Camera *mMainCamera;
     std::vector<Entity*> mEntities;
     std::vector<Actor*> mPhysicalObjects;
     glm::ivec2 mWindowSize;
     std::vector<glm::vec3> mPixelBuffer;
 
+    /**
+     * Tracers an "origin" ray into world space.
+     * @param ray
+     * @return The colour intensity from the ray.
+     */
     glm::vec3 trace(const Ray &ray);
+
+    /**
+     * Gets the closest object to the ray's origin.
+     * If no object was hit, the default colour is black.
+     * @param ray
+     * @return Information about what was hit.
+     */
     hitInfo getHitInWorld(const Ray &ray);
 };
 

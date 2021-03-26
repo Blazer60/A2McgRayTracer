@@ -41,8 +41,9 @@ protected:
     float mRadius;
 
 private:
+    // The following attributes allow the ball to go up and down following a sine wave.
     const bool mIsBobbing;  // Make the Sphere bob up and down in place.
-    glm::vec3 mStaticPos;
+    glm::vec3 mStaticPos;  // Track where the ball's original position was.
     float mTime;
     float mAmplitude;
     float mFrequency;
