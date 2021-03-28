@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "Sphere.h"
 #include "Entity.h"
+#include "DirectionalLight.h"
 
 #include "MCG_GFX_Lib.h"
 
@@ -40,6 +41,7 @@ protected:
     Camera *mMainCamera;
     std::vector<Entity*> mEntities;
     std::vector<Actor*> mPhysicalObjects;
+    std::vector<LightSource*> mLights;
     glm::ivec2 mWindowSize;
     std::vector<glm::vec3> mPixelBuffer;
 
@@ -49,6 +51,13 @@ protected:
      * @return The colour intensity from the ray.
      */
     glm::vec3 trace(const Ray &ray);
+
+    /**
+     * Casts shadow rays to each light source in the scene.
+     * @param hitInfo
+     * @return
+     */
+    glm::vec3 traceShadows(hitInfo &hit);
 
     /**
      * Gets the closest object to the ray's origin.

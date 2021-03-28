@@ -32,6 +32,8 @@ hitInfo Sphere::isIntersecting(Ray ray)
     glm::vec3 delta = mPosition - ray.mPosition;
     float deltaDot = glm::dot(delta, ray.mDirection);  // Gives us the
 
+    if (deltaDot < 0) { return { false, {}, {}, {} }; }  // The ray went backward so we won't hit anything
+
     const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
 
     // The ray did not intersect so we don't need to calculate the colour, position and hit normal.
@@ -45,13 +47,13 @@ hitInfo Sphere::isIntersecting(Ray ray)
     glm::vec3 hitNormal = glm::normalize(hitPosition - mPosition);
 
     // Crude working out of the lighting.
-    float intensity = glm::dot(hitNormal, -ray.mDirection);
-    glm::vec3 colour = mColour * intensity;
+    //float intensity = glm::dot(hitNormal, -ray.mDirection);
+    //glm::vec3 colour = mColour * intensity;
 
     return {
             true,
             hitPosition,
-            colour,
+            mColour,
             hitNormal
     };
 //    hitInfo hit = raySphereIntersection(ray, mPosition, mRadius);
