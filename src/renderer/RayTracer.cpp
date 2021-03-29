@@ -124,7 +124,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     {
         // Construct a rayToLight and fire it towards the light
         Ray rayToLight = light->getRayToLight(hit.hitPosition);
-        if (!getHitInWorld(rayToLight).hit)
+        if (!quickGetHitInWorld(rayToLight))
         {
             // Nothing was hit, so we can apply some shading.
             lightInfo lightInfo = light->getInfo(hit.hitPosition);
@@ -172,4 +172,16 @@ hitInfo RayTracer::getHitInWorld(const Ray &ray)
         }
     }
     return closestHit;
+}
+
+bool RayTracer::quickGetHitInWorld(const Ray &ray)
+{
+    for (auto &actor : mPhysicalObjects)
+    {
+        if (actor->quickIsIntersecting(ray))
+        {
+            return true;
+        }
+    }
+    return false;
 }

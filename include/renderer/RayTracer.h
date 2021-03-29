@@ -66,6 +66,8 @@ protected:
      * @return Information about what was hit.
      */
     hitInfo getHitInWorld(const Ray &ray);
+
+    bool quickGetHitInWorld(const Ray &ray);
 };
 
 

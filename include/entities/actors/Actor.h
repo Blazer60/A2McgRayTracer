@@ -31,7 +31,8 @@ public:
 
     Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale, const glm::vec3 &colour);
 
-    virtual hitInfo isIntersecting(Ray ray) = 0;
+    virtual hitInfo isIntersecting(const Ray &ray) = 0;
+    virtual bool quickIsIntersecting(const Ray &ray) = 0;
 
     const glm::vec3 &getColour() const
     {

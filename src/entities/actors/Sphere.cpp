@@ -27,10 +27,10 @@ Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(true)
     mStaticPos = glm::vec3(0);
 }
 
-hitInfo Sphere::isIntersecting(Ray ray)
+hitInfo Sphere::isIntersecting(const Ray &ray)
 {
     glm::vec3 delta = mPosition - ray.mPosition;
-    float deltaDot = glm::dot(delta, ray.mDirection);  // Gives us the
+    float deltaDot = glm::dot(delta, ray.mDirection);
 
     if (deltaDot < 0) { return { false, {}, {}, {} }; }  // The ray went backward so we won't hit anything
 
@@ -56,14 +56,22 @@ hitInfo Sphere::isIntersecting(Ray ray)
             mColour,
             hitNormal
     };
-//    hitInfo hit = raySphereIntersection(ray, mPosition, mRadius);
-//    // Work out the colour depending on the hit normal.
-//    if (hit.hit)
-//    {
-//        float intensity = glm::dot(hit.hitNormal, -ray.mDirection);
-//        hit.colour = mColour * intensity;
-//    }
-//    return hit;
+}
+
+bool Sphere::quickIsIntersecting(const Ray &ray)
+{
+    // The same as isIntersecting, but we don't need to work out all the other information.
+    glm::vec3 delta = mPosition - ray.mPosition;
+    float deltaDot = glm::dot(delta, ray.mDirection);
+
+    if (deltaDot < 0) { return false; }  // The ray went backward so we won't hit anything
+
+    const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
+
+    // The ray did not intersect so we don't need to calculate the colour, position and hit normal.
+    if (closestPoint > mRadius) { return false; }
+
+    return true;
 }
 
 void Sphere::update(float deltaTime)
