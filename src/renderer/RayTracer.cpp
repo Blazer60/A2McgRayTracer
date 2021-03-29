@@ -28,8 +28,8 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     auto *s = new Sphere({-1.f, 0.f, 6.f},
                          {0.f, 0.f, 0.f},
                          {1.f, 1.f, 1.f},
-                         {1.f, 0.f, 0.f},
-                         1);
+                         {0.f, 0.7f, 0.7f},
+                         1.f);
 
     mPhysicalObjects.push_back(s);
     mEntities.push_back(s);
@@ -37,14 +37,14 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     auto *s1 = new Sphere({1.f, 0.f, 6.f},
                           {0.f, 0.f, 0.f},
                           {1.f, 1.f, 1.f},
-                          {1.0f, 1.f, 1.f},
-                          1);
+                          {0.8f, 0.6f, 0.8f},
+                          1.f);
 
     mPhysicalObjects.push_back(s1);
     mEntities.push_back(s1);
 
     // Adding lights
-    auto *l = new DirectionalLight(glm::vec3(-0.5f, 0.f, -1.f), glm::vec3(1), 1);
+    auto *l = new DirectionalLight(glm::vec3(0.f, 0.f, -1.f), glm::vec3(1), 1);
     mLights.push_back(l);
     mEntities.push_back(l);
 }
@@ -136,9 +136,8 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     }
 
     // Specular Lighting
-    glm::vec3 vPrime = ray.mDirection / glm::abs(glm::dot(ray.mDirection, hit.hitNormal));
-    ray.mDirection = glm::normalize(vPrime + 2.f * hit.hitNormal);
-    ray.mPosition = hit.hitPosition + hit.hitNormal * 0.001f;
+    ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
+    ray.mPosition = hit.hitPosition;
     ray.mEnergy = ray.mEnergy * 0.6f;
 
     return hit.colour * 0.1f + hit.colour * diffuseColour;
