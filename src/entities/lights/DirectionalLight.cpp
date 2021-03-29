@@ -39,7 +39,8 @@ Ray DirectionalLight::getRayToLight(glm::vec3 pos)
 {
     return {
         pos,
-        mDirection
+        mDirection,
+        glm::vec3(0.f)
     };
 }
 

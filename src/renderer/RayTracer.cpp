@@ -25,26 +25,26 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mEntities.push_back(mMainCamera);
 
     // Adding Actors
-    auto *s = new Sphere({0.f, 0.f, 6.f},
+    auto *s = new Sphere({-1.f, 0.f, 6.f},
                          {0.f, 0.f, 0.f},
                          {1.f, 1.f, 1.f},
-                         {0.f, 0.7f, 0.7f},
-                         0.6);
+                         {1.f, 0.f, 0.f},
+                         1);
 
     mPhysicalObjects.push_back(s);
     mEntities.push_back(s);
 
-    auto *s1 = new Sphere({2.f, 0.f, 10.f},
+    auto *s1 = new Sphere({1.f, 0.f, 6.f},
                           {0.f, 0.f, 0.f},
                           {1.f, 1.f, 1.f},
-                          {0.8f, 0.6f, 0.8f},
-                          1.5);
+                          {1.0f, 1.f, 1.f},
+                          1);
 
     mPhysicalObjects.push_back(s1);
     mEntities.push_back(s1);
 
     // Adding lights
-    auto *l = new DirectionalLight(glm::vec3(-0.5f, 0, -1.f), glm::vec3(1), 1);
+    auto *l = new DirectionalLight(glm::vec3(-0.5f, 0.f, -1.f), glm::vec3(1), 1);
     mLights.push_back(l);
     mEntities.push_back(l);
 }
@@ -94,34 +94,54 @@ void RayTracer::run()
     }
 }
 
-glm::vec3 RayTracer::trace(const Ray &ray)
+glm::vec3 RayTracer::trace(Ray &ray)
 {
-    hitInfo hit = getHitInWorld(ray);
     glm::vec3 colour(0);
-    if (hit.hit)
+    for (int i = 0; i < 2; ++i)
     {
-        colour = traceShadows(hit);
+        hitInfo hit = getHitInWorld(ray);
+
+        colour += ray.mEnergy * traceShadows(ray, hit);  // Trace shadow will also reflect the ray
+        if (glm::dot(ray.mEnergy, ray.mEnergy) < 0.f)
+        {
+            break;
+        }
     }
     return colour;
 }
 
-glm::vec3 RayTracer::traceShadows(hitInfo &hit)
+glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
 {
-    float overallIntensity = 0;
+    if (!hit.hit)
+    {
+        ray.mEnergy = glm::vec3(0.f);
+        return glm::vec3(0.f);
+    }
+
+    // Diffuse Lighting
+    glm::vec3 diffuseColour(0);
     for (auto &light : mLights)
     {
-        // Construct a ray
-        Ray ray = light->getRayToLight(hit.hitPosition);
-
-        if (!getHitInWorld(ray).hit)
+        // Construct a rayToLight and fire it towards the light
+        Ray rayToLight = light->getRayToLight(hit.hitPosition);
+        if (!getHitInWorld(rayToLight).hit)
         {
+            // Nothing was hit, so we can apply some shading.
             lightInfo lightInfo = light->getInfo(hit.hitPosition);
-            float dot = glm::dot(hit.hitNormal, lightInfo.direction);
-            overallIntensity += dot > 0 ? dot : 0;
-        }
 
+            // Diffuse Colour
+            float dot = glm::dot(hit.hitNormal, lightInfo.direction);
+            diffuseColour += dot > 0 ? dot * lightInfo.colour : glm::vec3 (0);
+        }
     }
-    return hit.colour * 0.1f + hit.colour * overallIntensity;
+
+    // Specular Lighting
+    glm::vec3 vPrime = ray.mDirection / glm::abs(glm::dot(ray.mDirection, hit.hitNormal));
+    ray.mDirection = glm::normalize(vPrime + 2.f * hit.hitNormal);
+    ray.mPosition = hit.hitPosition + hit.hitNormal * 0.001f;
+    ray.mEnergy = ray.mEnergy * 0.6f;
+
+    return hit.colour * 0.1f + hit.colour * diffuseColour;
 }
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)

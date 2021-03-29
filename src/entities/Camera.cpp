@@ -98,7 +98,8 @@ Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
     // Convert to ray format where we have an origin and then a direction
     return {
             nearPlane,
-            glm::normalize(farPlane - nearPlane)
+            glm::normalize(farPlane - nearPlane),
+            glm::vec3(1.f)
     };
 }
 

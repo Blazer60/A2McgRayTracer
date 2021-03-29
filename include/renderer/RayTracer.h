@@ -50,14 +50,14 @@ protected:
      * @param ray
      * @return The colour intensity from the ray.
      */
-    glm::vec3 trace(const Ray &ray);
+    glm::vec3 trace(Ray &ray);
 
     /**
      * Casts shadow rays to each light source in the scene.
      * @param hitInfo
      * @return
      */
-    glm::vec3 traceShadows(hitInfo &hit);
+    glm::vec3 traceShadows(Ray &ray, hitInfo &hit);
 
     /**
      * Gets the closest object to the ray's origin.
