@@ -14,7 +14,7 @@
 Sphere::Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
                const glm::vec3 &specular, float mRadius)
                : Actor(mPosition, mRotation, mScale, colour, specular),
-               mRadius(mRadius), mIsBobbing(true)
+               mRadius(mRadius), mIsBobbing(false)
 {
     mStaticPos = mPosition;
     mTime = 0;
@@ -22,9 +22,19 @@ Sphere::Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm
     mFrequency = 1;
 }
 
-Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(true)
+Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(false)
 {
     mStaticPos = glm::vec3(0);
+}
+
+Sphere::Sphere(const glm::vec3 &position, const glm::vec3 &colour, const glm::vec3 &specular, const float &radius)
+    : Actor(position, { 0.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }, colour, specular),
+    mRadius(radius), mIsBobbing(false)
+{
+    mStaticPos = position;
+    mTime = 0;
+    mAmplitude = 1;
+    mFrequency = 1;
 }
 
 hitInfo Sphere::isIntersecting(const Ray &ray)

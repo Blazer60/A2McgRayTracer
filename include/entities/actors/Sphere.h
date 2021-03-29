@@ -28,6 +28,7 @@ public:
     Sphere();
     Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
            const glm::vec3 &specular, float mRadius);
+    Sphere(const glm::vec3 &position, const glm::vec3 &colour, const glm::vec3 &specular, const float & radius);
 
     void update(float deltaTime) override;
     hitInfo isIntersecting(const Ray &ray) override;

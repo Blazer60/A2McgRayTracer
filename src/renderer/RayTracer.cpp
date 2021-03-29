@@ -24,30 +24,58 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
                              22.5f);
     mEntities.push_back(mMainCamera);
 
-    // Adding Actors
-    auto *s = new Sphere({-1.f, 0.f, 6.f},
-                         {0.f, 0.f, 0.f},
-                         {1.f, 1.f, 1.f},
-                         {0.f, 0.7f, 0.7f},
-                         {0.0f, 0.0f, 0.0f},
-                         1.f);
+//    // Adding Actors
+//    auto *s = new Sphere({-1.f, 0.f, 6.f},
+//                         {0.f, 0.f, 0.f},
+//                         {1.f, 1.f, 1.f},
+//                         {0.f, 0.7f, 0.7f},
+//                         {0.0f, 0.0f, 0.0f},
+//                         1.f);
+//
+//    mPhysicalObjects.push_back(s);
+//    mEntities.push_back(s);
+//
+//    auto *s1 = new Sphere({1.f, 0.f, 6.f},
+//                          {0.f, 0.f, 0.f},
+//                          {1.f, 1.f, 1.f},
+//                          {0.8f, 0.6f, 0.8f},  // 0.8, 0.6, 0.8
+//                          {0.8f, 0.6f, 0.8f},
+//                          1.f);
+//
+//    // Realistic specular means that the specular value cannot exceed that of the colour.
+//    mPhysicalObjects.push_back(s1);
+//    mEntities.push_back(s1);
 
-    mPhysicalObjects.push_back(s);
-    mEntities.push_back(s);
-
-    auto *s1 = new Sphere({1.f, 0.f, 6.f},
-                          {0.f, 0.f, 0.f},
-                          {1.f, 1.f, 1.f},
-                          {0.8f, 0.6f, 0.8f},  // 0.8, 0.6, 0.8
-                          {0.8f, 0.6f, 0.8f},
+    auto *s1 = new Sphere({0.f, 1.7f, 7.f},
+                          {0.3f, 0.3f, 0.3f},
+                          {0.1f, 0.1f, 0.1f},
                           1.f);
-
-    // Realistic specular means that the specular value cannot exceed that of the colour.
     mPhysicalObjects.push_back(s1);
     mEntities.push_back(s1);
 
+    auto *s2 = new Sphere({-1.f, 0.f, 7.f},
+                          {0.0f, 0.0f, 1.0f},
+                          {0.8f, 0.8f, 0.8f},
+                          1.f);
+    mPhysicalObjects.push_back(s2);
+    mEntities.push_back(s2);
+
+    auto *s3 = new Sphere({1.f, 0.f, 7.f},
+                          {0.3f, 0.3f, 0.3f},
+                          {0.3f, 0.3f, 0.3f},
+                          1.f);
+    mPhysicalObjects.push_back(s3);
+    mEntities.push_back(s3);
+
+    auto *s4 = new Sphere({0.f, -1.7f, 7.f},
+                          {1.0f, 0.0f, 0.0f},
+                          {1.0f, 1.0f, 1.0f},
+                          1.f);
+    mPhysicalObjects.push_back(s4);
+    mEntities.push_back(s4);
+
     // Adding lights
-    auto *l = new DirectionalLight(glm::vec3(0.f, 0.f, -1.f), glm::vec3(1), 1);
+    auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1);
     mLights.push_back(l);
     mEntities.push_back(l);
 }
@@ -100,7 +128,7 @@ void RayTracer::run()
 glm::vec3 RayTracer::trace(Ray &ray)
 {
     glm::vec3 colour(0);
-    for (int i = 0; i < 2; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         hitInfo hit = getHitInWorld(ray);
         glm::vec3 energy = ray.mEnergy;  // Shadow tracing changes the energy value for the next ray.
@@ -123,6 +151,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
 
     // Diffuse Lighting
     glm::vec3 diffuseColour(0);
+    glm::vec3 specularColour(0);
     for (auto &light : mLights)
     {
         // Construct a rayToLight and fire it towards the light
@@ -135,15 +164,20 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
             // Diffuse Colour
             float dot = glm::dot(hit.hitNormal, lightInfo.direction);
             diffuseColour += dot > 0 ? dot * lightInfo.colour : glm::vec3 (0);
+
+            // specular
+            glm::vec3 halfDir = glm::normalize(lightInfo.direction + mMainCamera->getPosition());
+            dot = glm::dot(hit.hitNormal, halfDir);
+            specularColour += dot > 0 ? dot * lightInfo.colour : glm::vec3(0);
         }
     }
 
-    // Specular Lighting
+    // Reflection Ray
     ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
     ray.mPosition = hit.hitPosition;
     ray.mEnergy = ray.mEnergy * hit.specular;
 
-    return hit.ambient + hit.diffuse * diffuseColour;
+    return hit.ambient + hit.diffuse * diffuseColour + hit.specular * glm::pow(specularColour, glm::vec3(128.f));
 }
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
