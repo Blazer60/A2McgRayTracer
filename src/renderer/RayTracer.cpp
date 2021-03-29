@@ -29,6 +29,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
                          {0.f, 0.f, 0.f},
                          {1.f, 1.f, 1.f},
                          {0.f, 0.7f, 0.7f},
+                         {0.0f, 0.0f, 0.0f},
                          1.f);
 
     mPhysicalObjects.push_back(s);
@@ -37,9 +38,11 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     auto *s1 = new Sphere({1.f, 0.f, 6.f},
                           {0.f, 0.f, 0.f},
                           {1.f, 1.f, 1.f},
+                          {0.8f, 0.6f, 0.8f},  // 0.8, 0.6, 0.8
                           {0.8f, 0.6f, 0.8f},
                           1.f);
 
+    // Realistic specular means that the specular value cannot exceed that of the colour.
     mPhysicalObjects.push_back(s1);
     mEntities.push_back(s1);
 
@@ -100,8 +103,8 @@ glm::vec3 RayTracer::trace(Ray &ray)
     for (int i = 0; i < 2; ++i)
     {
         hitInfo hit = getHitInWorld(ray);
-
-        colour += ray.mEnergy * traceShadows(ray, hit);  // Trace shadow will also reflect the ray
+        glm::vec3 energy = ray.mEnergy;  // Shadow tracing changes the energy value for the next ray.
+        colour += energy * traceShadows(ray, hit);  // Trace shadow will also reflect the ray
         if (glm::dot(ray.mEnergy, ray.mEnergy) < 0.f)
         {
             break;
@@ -138,17 +141,17 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     // Specular Lighting
     ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
     ray.mPosition = hit.hitPosition;
-    ray.mEnergy = ray.mEnergy * 0.6f;
+    ray.mEnergy = ray.mEnergy * hit.specular;
 
-    return hit.colour * 0.1f + hit.colour * diffuseColour;
+    return hit.ambient + hit.diffuse * diffuseColour;
 }
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
 {
     hitInfo closestHit{false};
-    closestHit.colour = glm::vec3 {0.f};
+    closestHit.diffuse = glm::vec3 {0.f};
     float closestHitLength(0);
-    // Get the colour that the ray interception returns
+    // Get the diffuse that the ray interception returns
     for (auto &actor : mPhysicalObjects)
     {
         hitInfo cur = actor->isIntersecting(ray);

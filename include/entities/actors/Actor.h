@@ -29,23 +29,26 @@ public:
      */
     Actor();
 
-    Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale, const glm::vec3 &colour);
+    Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
+          const glm::vec3 &specular);
 
     virtual hitInfo isIntersecting(const Ray &ray) = 0;
     virtual bool quickIsIntersecting(const Ray &ray) = 0;
 
     const glm::vec3 &getColour() const
     {
-        return mColour;
+        return mDiffuse;
     }
 
 protected:
     /**
-     * @brief The colour of the object when a ray hits an object (only when no shading is applied
+     * @brief The diffuse of the object when a ray hits an object (only when no shading is applied
      * E.g.: unlit).
-     * @paragraph It is defined here as hitInfo struct requires a colour to be returned.
+     * @paragraph It is defined here as hitInfo struct requires a diffuse to be returned.
      */
-    glm::vec3 mColour;
+    glm::vec3 mDiffuse;
+    glm::vec3 mSpecular;
+    glm::vec3 mAmbient;
 };
 
 

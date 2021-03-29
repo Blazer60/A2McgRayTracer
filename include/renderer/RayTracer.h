@@ -48,7 +48,7 @@ protected:
     /**
      * Tracers an "origin" ray into world space.
      * @param ray
-     * @return The colour intensity from the ray.
+     * @return The diffuse intensity from the ray.
      */
     glm::vec3 trace(Ray &ray);
 
@@ -61,7 +61,7 @@ protected:
 
     /**
      * Gets the closest object to the ray's origin.
-     * If no object was hit, the default colour is black.
+     * If no object was hit, the default diffuse is black.
      * @param ray
      * @return Information about what was hit.
      */

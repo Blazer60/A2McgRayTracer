@@ -27,7 +27,7 @@ class Sphere : public Actor
 public:
     Sphere();
     Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
-           float mRadius);
+           const glm::vec3 &specular, float mRadius);
 
     void update(float deltaTime) override;
     hitInfo isIntersecting(const Ray &ray) override;

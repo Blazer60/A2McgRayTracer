@@ -12,8 +12,8 @@
 #include "Sphere.h"
 
 Sphere::Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
-               float mRadius)
-               : Actor(mPosition, mRotation, mScale, colour),
+               const glm::vec3 &specular, float mRadius)
+               : Actor(mPosition, mRotation, mScale, colour, specular),
                mRadius(mRadius), mIsBobbing(true)
 {
     mStaticPos = mPosition;
@@ -36,7 +36,7 @@ hitInfo Sphere::isIntersecting(const Ray &ray)
 
     const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
 
-    // The ray did not intersect so we don't need to calculate the colour, position and hit normal.
+    // The ray did not intersect so we don't need to calculate the colours, position and hit normal.
     if (closestPoint > mRadius) { return { false, {}, {}, {} }; }
 
     // Work out the position that the ray intercepted the sphere.
@@ -46,15 +46,13 @@ hitInfo Sphere::isIntersecting(const Ray &ray)
     // Ray hit normal
     glm::vec3 hitNormal = glm::normalize(hitPosition - mPosition);
 
-    // Crude working out of the lighting.
-    //float intensity = glm::dot(hitNormal, -ray.mDirection);
-    //glm::vec3 colour = mColour * intensity;
-
     return {
             true,
             hitPosition,
-            mColour,
-            hitNormal
+            hitNormal,
+            mAmbient,
+            mDiffuse,
+            mSpecular
     };
 }
 
@@ -68,7 +66,7 @@ bool Sphere::quickIsIntersecting(const Ray &ray)
 
     const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
 
-    // The ray did not intersect so we don't need to calculate the colour, position and hit normal.
+    // The ray did not intersect so we don't need to calculate the colours, position and hit normal.
     if (closestPoint > mRadius) { return false; }
 
     return true;
