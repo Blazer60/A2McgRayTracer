@@ -108,7 +108,7 @@ struct actorLightingMaterial : public lightingMaterial
     actorLightingMaterial() :
         transmissionIntensity(0.f),
         reflectivityIntensity(0.38f),
-        shininessConstant(1024)
+        shininessConstant(2048.f)
     {}
 };
 
