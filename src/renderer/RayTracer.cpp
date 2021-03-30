@@ -166,16 +166,16 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
         if (!quickGetHitInWorld(rayToLight))
         {
             // Nothing was hit, so we can apply some shading.
-            lightInfo lightInfo = light->getInfo(hit.hitPosition);
+            lightingMaterial lightInfo = light->getInfo(hit.hitPosition);
 
             // Diffuse Colour
             float dot = glm::dot(hit.hitNormal, rayToLight.mDirection);
-            diffuseColour += dot > 0 ? dot * lightInfo.colour : glm::vec3 (0);
+            diffuseColour += dot > 0 ? dot * lightInfo.diffuseIntensity : glm::vec3 (0);
 
             // specular
             glm::vec3 halfDir = glm::normalize(rayToLight.mDirection + mMainCamera->getPosition());
             dot = glm::dot(hit.hitNormal, halfDir);
-            specularColour += dot > 0 ? dot * lightInfo.colour : glm::vec3(0);
+            specularColour += dot > 0 ? dot * lightInfo.specularIntensity : glm::vec3(0);
         }
     }
 

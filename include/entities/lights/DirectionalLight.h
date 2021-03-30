@@ -27,10 +27,9 @@ public:
 
     Ray getRayToLight(glm::vec3 pos) override;
 
-    lightInfo getInfo(glm::vec3 pos) override;
+    lightingMaterial getInfo(glm::vec3 pos) override;
 
 protected:
-    glm::vec3 mIntensityColour;
     glm::vec3 mDirection;
 };
 

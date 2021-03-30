@@ -14,6 +14,7 @@
 
 #include "Entity.h"
 #include "Ray.h"
+#include "LightingMaterials.h"
 
 #include "glm.hpp"
 
@@ -38,8 +39,9 @@ class LightSource : public Entity
 public:
     LightSource();
 
-    LightSource(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-                const glm::vec3 &mColour, float mIntensity);
+    LightSource(const glm::vec3 &position, const glm::vec3 &mColour, float mIntensity);
+
+    LightSource(const glm::vec3 &colour, const float &intensity);
 
     void update(float deltaTime) override {};
 
@@ -55,11 +57,10 @@ public:
      * @param pos
      * @return
      */
-    virtual lightInfo getInfo(glm::vec3 pos) = 0;
+    virtual lightingMaterial getInfo(glm::vec3 pos) = 0;
 
 protected:
-    glm::vec3 mColour;
-    float mIntensity;
+    lightingMaterial mMaterial;
 };
 
 

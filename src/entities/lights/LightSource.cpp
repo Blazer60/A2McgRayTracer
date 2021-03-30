@@ -11,9 +11,18 @@
 
 #include "LightSource.h"
 
-LightSource::LightSource() : mColour(1), mIntensity(1) {}
+LightSource::LightSource() :
+    Entity(),
+    mMaterial(glm::vec3(1.f))
+{}
 
-LightSource::LightSource(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-                         const glm::vec3 &mColour, float mIntensity) : Entity(position, eulerRotation, mScale),
-                                                                       mColour(mColour), mIntensity(mIntensity)
+LightSource::LightSource(const glm::vec3 &position, const glm::vec3 &colour,
+                         float intensity) :
+                         Entity(position, glm::vec3(0), glm::vec3(1)),
+                         mMaterial(colour * intensity)
+{}
+
+LightSource::LightSource(const glm::vec3 &colour, const float &intensity) :
+    Entity(),
+    mMaterial(glm::vec3(colour * intensity))
 {}
