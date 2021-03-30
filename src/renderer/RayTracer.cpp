@@ -96,6 +96,10 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1.f);
     mLights.push_back(l);
     mEntities.push_back(l);
+
+//    auto *l2 = new DirectionalLight(glm::vec3(0.4f, 1.f, -1.f), glm::vec3(1), 1.f);
+//    mLights.push_back(l2);
+//    mEntities.push_back(l2);
 }
 
 void RayTracer::update()
@@ -181,12 +185,18 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
 
             // Diffuse Colour
             float dot = glm::dot(hit.hitNormal, rayToLight.mDirection);
-            diffuseColour += dot > 0 ? dot * lightInfo.diffuseIntensity : glm::vec3 (0);
+            if (dot > 0)
+            {
+                diffuseColour += dot * lightInfo.diffuseIntensity * hit.material.diffuseIntensity;
+            }
 
             // specular
             glm::vec3 halfDir = glm::normalize(rayToLight.mDirection + mMainCamera->getPosition());
-            dot = glm::dot(hit.hitNormal, halfDir);
-            specularColour += dot > 0 ? dot * lightInfo.specularIntensity : glm::vec3(0);
+            dot = glm::pow(glm::dot(hit.hitNormal, halfDir), hit.material.shininessConstant);
+            if (dot > 0)
+            {
+                specularColour += dot * lightInfo.specularIntensity * hit.material.specularIntensity;
+            }
         }
     }
 
@@ -195,10 +205,8 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     ray.mPosition = hit.hitPosition;
     ray.mEnergy = ray.mEnergy * hit.material.reflectivityIntensity;
 
-    return  hit.material.ambientIntensity
-            + hit.material.diffuseIntensity * diffuseColour
-            + hit.material.specularIntensity * glm::pow(specularColour, glm::vec3(hit.material.shininessConstant));
-} //
+    return  hit.material.ambientIntensity + diffuseColour + specularColour;
+}
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
 {
