@@ -74,6 +74,13 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mPhysicalObjects.push_back(s4);
     mEntities.push_back(s4);
 
+//    auto *s1 = new Sphere({0.f, 0.0f, 5.f},
+//                          {0.5f, 0.5f, 0.5f},
+//                          {0.2f, 0.2f, 0.2f},
+//                          1.f);
+//    mPhysicalObjects.push_back(s1);
+//    mEntities.push_back(s1);
+
     // Adding lights
     auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1);
     mLights.push_back(l);
@@ -128,7 +135,7 @@ void RayTracer::run()
 glm::vec3 RayTracer::trace(Ray &ray)
 {
     glm::vec3 colour(0);
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 3; ++i)
     {
         hitInfo hit = getHitInWorld(ray);
         glm::vec3 energy = ray.mEnergy;  // Shadow tracing changes the energy value for the next ray.
@@ -162,11 +169,11 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
             lightInfo lightInfo = light->getInfo(hit.hitPosition);
 
             // Diffuse Colour
-            float dot = glm::dot(hit.hitNormal, lightInfo.direction);
+            float dot = glm::dot(hit.hitNormal, rayToLight.mDirection);
             diffuseColour += dot > 0 ? dot * lightInfo.colour : glm::vec3 (0);
 
             // specular
-            glm::vec3 halfDir = glm::normalize(lightInfo.direction + mMainCamera->getPosition());
+            glm::vec3 halfDir = glm::normalize(rayToLight.mDirection + mMainCamera->getPosition());
             dot = glm::dot(hit.hitNormal, halfDir);
             specularColour += dot > 0 ? dot * lightInfo.colour : glm::vec3(0);
         }
@@ -177,7 +184,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     ray.mPosition = hit.hitPosition;
     ray.mEnergy = ray.mEnergy * hit.specular;
 
-    return hit.ambient + hit.diffuse * diffuseColour + hit.specular * glm::pow(specularColour, glm::vec3(128.f));
+    return hit.ambient + hit.diffuse * diffuseColour + hit.specular * glm::pow(specularColour, glm::vec3(1024.f));
 }
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
