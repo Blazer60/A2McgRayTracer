@@ -93,13 +93,13 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mEntities.push_back(s1);
 
     // Adding lights
-    auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1.f);
-    mLights.push_back(l);
-    mEntities.push_back(l);
+//    auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1.f);
+//    mLights.push_back(l);
+//    mEntities.push_back(l);
 
-//    auto *l2 = new DirectionalLight(glm::vec3(0.4f, 1.f, -1.f), glm::vec3(1), 1.f);
-//    mLights.push_back(l2);
-//    mEntities.push_back(l2);
+    auto *l2 = new PointLight(glm::vec3(-1.f, 2.f, 4.f), glm::vec3(1), 1.f, 10.f);
+    mLights.push_back(l2);
+    mEntities.push_back(l2);
 }
 
 void RayTracer::update()

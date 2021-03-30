@@ -6,7 +6,7 @@ add_library(Entities
 
         lights/LightSource.cpp ${PROJECT_INCLUDE_DIR}/entities/lights/LightSource.h
         lights/DirectionalLight.cpp ../../include/entities/lights/DirectionalLight.h
-        ../../include/entities/LightingMaterials.h)
+        ../../include/entities/LightingMaterials.h lights/PointLight.cpp ../../include/entities/lights/PointLight.h)
 
 # Link the relevent include file to the entities library so that the source file can see it.
 target_include_directories(Entities PUBLIC

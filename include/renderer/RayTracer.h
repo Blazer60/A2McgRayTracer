@@ -15,6 +15,7 @@
 #include "Sphere.h"
 #include "Entity.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 
 #include "MCG_GFX_Lib.h"
 
