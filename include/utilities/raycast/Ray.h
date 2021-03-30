@@ -13,6 +13,8 @@
 #ifndef A2MCGRAYTRACER_RAY_H
 #define A2MCGRAYTRACER_RAY_H
 
+#include "LightingMaterials.h"
+
 #include "glm.hpp"
 
 
@@ -43,9 +45,7 @@ struct hitInfo
     bool hit;
     glm::vec3 hitPosition;
     glm::vec3 hitNormal;
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    actorLightingMaterial material;
 };
 
 #endif //A2MCGRAYTRACER_RAY_H

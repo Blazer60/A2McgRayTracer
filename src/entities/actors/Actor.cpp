@@ -11,9 +11,15 @@
 
 Actor::Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
              const glm::vec3 &colour,
-             const glm::vec3 &specular)
-        : Entity(mPosition, eulerRotation, mScale), mAmbient(colour * 0.1f), mDiffuse(colour), mSpecular(specular)
+             const glm::vec3 &specular) :
+             Entity(mPosition, eulerRotation, mScale),
+             mMaterial(colour, specular, specular, 1024.f)
 {}
 
-Actor::Actor() : Entity(), mAmbient(0.f, 0.1f, 0.036f), mDiffuse(0.f, 1.f, 0.36f),
-    mSpecular(0) {}
+Actor::Actor(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial) :
+    Entity(position, glm::vec3(0.f), glm::vec3(1.f)),
+    mMaterial(lightingMaterial)
+{}
+
+Actor::Actor() : Entity(), mMaterial()
+{}

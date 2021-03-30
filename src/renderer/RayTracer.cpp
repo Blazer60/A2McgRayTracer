@@ -46,33 +46,12 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mPhysicalObjects.push_back(s1);
 //    mEntities.push_back(s1);
 
-    auto *s1 = new Sphere({0.f, 1.7f, 7.f},
-                          {0.3f, 0.3f, 0.3f},
-                          {0.1f, 0.1f, 0.1f},
-                          1.f);
+    actorLightingMaterial mat1{};
+    auto *s1 = new Sphere({0.f, 0.f, 6.f},
+                          mat1,
+                          1);
     mPhysicalObjects.push_back(s1);
     mEntities.push_back(s1);
-
-    auto *s2 = new Sphere({-1.f, 0.f, 7.f},
-                          {0.0f, 0.0f, 1.0f},
-                          {0.8f, 0.8f, 0.8f},
-                          1.f);
-    mPhysicalObjects.push_back(s2);
-    mEntities.push_back(s2);
-
-    auto *s3 = new Sphere({1.f, 0.f, 7.f},
-                          {0.3f, 0.3f, 0.3f},
-                          {0.3f, 0.3f, 0.3f},
-                          1.f);
-    mPhysicalObjects.push_back(s3);
-    mEntities.push_back(s3);
-
-    auto *s4 = new Sphere({0.f, -1.7f, 7.f},
-                          {1.0f, 0.0f, 0.0f},
-                          {1.0f, 1.0f, 1.0f},
-                          1.f);
-    mPhysicalObjects.push_back(s4);
-    mEntities.push_back(s4);
 
 //    auto *s1 = new Sphere({0.f, 0.0f, 5.f},
 //                          {0.5f, 0.5f, 0.5f},
@@ -182,15 +161,17 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     // Reflection Ray
     ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
     ray.mPosition = hit.hitPosition;
-    ray.mEnergy = ray.mEnergy * hit.specular;
+    ray.mEnergy = ray.mEnergy * hit.material.specularIntensity;
 
-    return hit.ambient + hit.diffuse * diffuseColour + hit.specular * glm::pow(specularColour, glm::vec3(1024.f));
+    return  hit.material.ambientIntensity
+            + hit.material.diffuseIntensity * diffuseColour
+            + hit.material.specularIntensity * glm::pow(specularColour, hit.material.specularIntensity);
 }
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
 {
     hitInfo closestHit{false};
-    closestHit.diffuse = glm::vec3 {0.f};
+    closestHit.hitPosition = glm::vec3 {0.f};
     float closestHitLength(0);
     // Get the diffuse that the ray interception returns
     for (auto &actor : mPhysicalObjects)

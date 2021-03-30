@@ -26,9 +26,10 @@ class Sphere : public Actor
 {
 public:
     Sphere();
-    Sphere(const glm::vec3 &mPosition, const glm::vec3 &mRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
-           const glm::vec3 &specular, float mRadius);
+
     Sphere(const glm::vec3 &position, const glm::vec3 &colour, const glm::vec3 &specular, const float & radius);
+
+    Sphere(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial, const float &radius);
 
     void update(float deltaTime) override;
     hitInfo isIntersecting(const Ray &ray) override;
@@ -44,12 +45,14 @@ protected:
     float mRadius;
 
 private:
+    void init();
+
     // The following attributes allow the ball to go up and down following a sine wave.
     const bool mIsBobbing;  // Make the Sphere bob up and down in place.
     glm::vec3 mStaticPos;  // Track where the ball's original position was.
-    float mTime;
-    float mAmplitude;
-    float mFrequency;
+    float mTime{};
+    float mAmplitude{};
+    float mFrequency{};
 };
 
 

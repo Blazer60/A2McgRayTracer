@@ -39,7 +39,7 @@ hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const floa
         true,
         hitPosition,
         {},
-        hitNormal
+        {}
     };
 }
 

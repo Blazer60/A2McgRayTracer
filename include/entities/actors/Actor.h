@@ -14,6 +14,7 @@
 #include "Entity.h"
 #include "glm.hpp"
 #include "Ray.h"
+#include "LightingMaterials.h"
 
 /**
  * An object in world space that can be seen by the camera.
@@ -24,10 +25,9 @@
 class Actor : public Entity
 {
 public:
-    /**
-     * Actors by default are set to pink.
-     */
     Actor();
+
+    Actor(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial);
 
     Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
           const glm::vec3 &specular);
@@ -37,18 +37,11 @@ public:
 
     const glm::vec3 &getColour() const
     {
-        return mDiffuse;
+        return mMaterial.diffuseIntensity;
     }
 
 protected:
-    /**
-     * @brief The diffuse of the object when a ray hits an object (only when no shading is applied
-     * E.g.: unlit).
-     * @paragraph It is defined here as hitInfo struct requires a diffuse to be returned.
-     */
-    glm::vec3 mDiffuse;
-    glm::vec3 mSpecular;
-    glm::vec3 mAmbient;
+    actorLightingMaterial mMaterial;
 };
 
 
