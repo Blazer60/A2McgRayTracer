@@ -10,10 +10,9 @@
 #include "Actor.h"
 
 Actor::Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-             const glm::vec3 &colour,
-             const glm::vec3 &specular) :
+             const actorLightingMaterial &material) :
              Entity(mPosition, eulerRotation, mScale),
-             mMaterial(colour, specular, specular, 1024.f)
+             mMaterial(material)
 {}
 
 Actor::Actor(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial) :

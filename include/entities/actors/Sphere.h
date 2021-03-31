@@ -27,8 +27,6 @@ class Sphere : public Actor
 public:
     Sphere();
 
-    Sphere(const glm::vec3 &position, const glm::vec3 &colour, const glm::vec3 &specular, const float & radius);
-
     Sphere(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial, const float &radius);
 
     void update(float deltaTime) override;

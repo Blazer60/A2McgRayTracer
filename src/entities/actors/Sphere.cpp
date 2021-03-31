@@ -16,13 +16,6 @@ Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(false)
     init();
 }
 
-Sphere::Sphere(const glm::vec3 &position, const glm::vec3 &colour, const glm::vec3 &specular, const float &radius)
-    : Actor(position, { 0.f, 0.f, 0.f }, { 1.f, 1.f, 1.f }, colour, specular),
-    mRadius(radius), mIsBobbing(false)
-{
-    init();
-}
-
 Sphere::Sphere(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial, const float &radius) :
     Actor(position, lightingMaterial),
     mRadius(radius),

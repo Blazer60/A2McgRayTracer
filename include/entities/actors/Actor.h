@@ -29,8 +29,8 @@ public:
 
     Actor(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial);
 
-    Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale, const glm::vec3 &colour,
-          const glm::vec3 &specular);
+    Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
+          const actorLightingMaterial &material);
 
     virtual hitInfo isIntersecting(const Ray &ray) = 0;
     virtual bool quickIsIntersecting(const Ray &ray) = 0;
