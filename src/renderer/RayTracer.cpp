@@ -46,44 +46,44 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mPhysicalObjects.push_back(s1);
 //    mEntities.push_back(s1);
 
-    actorLightingMaterial grey({0.3f, 0.3f, 0.3f},
-                               {0.1f, 0.1f, 0.1f},
-                               glm::vec3(0.05f),
-                               128.f);
-
+//    actorLightingMaterial grey({0.3f, 0.3f, 0.3f},
+//                               {0.1f, 0.1f, 0.1f},
+//                               glm::vec3(0.05f),
+//                               128.f);
+//
     actorLightingMaterial red({1.f, 0.f, 0.f},
                               {0.5f, 0.5f, 0.5f},
                               glm::vec3(0.8f),
                               64.f);
-
+//
     actorLightingMaterial blue({0.f, 0.f, 0.7f},
                               {0.2f, 0.2f, 0.2f},
                               glm::vec3(0.3f),
                               128.f);
-
-    auto *s1 = new Sphere({0.f, 1.73f, 7.f},
-                          grey,
-                          1);
-    mPhysicalObjects.push_back(s1);
-    mEntities.push_back(s1);
-
+//
+//    auto *s1 = new Sphere({0.f, 1.73f, 7.f},
+//                          grey,
+//                          1);
+//    mPhysicalObjects.push_back(s1);
+//    mEntities.push_back(s1);
+//
     auto *s2 = new Sphere({-1.f, 0.f, 7.f},
                           blue,
                           1);
     mPhysicalObjects.push_back(s2);
     mEntities.push_back(s2);
-
-    auto *s3 = new Sphere({1.f, 0.f, 7.f},
-                          grey,
-                          1);
-    mPhysicalObjects.push_back(s3);
-    mEntities.push_back(s3);
-
-    auto *s4 = new Sphere({0.f, -1.73f, 7.f},
-                          red,
-                          1);
-    mPhysicalObjects.push_back(s4);
-    mEntities.push_back(s4);
+//
+//    auto *s3 = new Sphere({1.f, 0.f, 7.f},
+//                          grey,
+//                          1);
+//    mPhysicalObjects.push_back(s3);
+//    mEntities.push_back(s3);
+//
+//    auto *s4 = new Sphere({0.f, -1.73f, 7.f},
+//                          red,
+//                          1);
+//    mPhysicalObjects.push_back(s4);
+//    mEntities.push_back(s4);
 
 //    auto *s1 = new Sphere({0.f, 0.0f, 5.f},
 //                          {0.5f, 0.5f, 0.5f},
@@ -92,14 +92,28 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mPhysicalObjects.push_back(s1);
 //    mEntities.push_back(s1);
 
-    // Adding lights
-//    auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1.f);
-//    mLights.push_back(l);
-//    mEntities.push_back(l);
+    auto *vert = new vertex[3] {
+            vertex({-2.f, -1.f, 0.f}),
+            vertex({-1.f, 1.f, 0.f}),
+            vertex({1.f, 0.f, 0.f}),
+    };
 
-    auto *l2 = new PointLight(glm::vec3(-1.f, 2.f, 4.f), glm::vec3(1), 1.f, 10.f);
-    mLights.push_back(l2);
-    mEntities.push_back(l2);
+    auto *t = new Tri({3.f, 0.f, 6.f},
+                      {0.f, -1.f, 0.f},
+                      {1.f, 1.f, 1.f},
+                      red,
+                      vert);
+    mPhysicalObjects.push_back(t);
+    mEntities.push_back(t);
+
+    // Adding lights
+    auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1.f);
+    mLights.push_back(l);
+    mEntities.push_back(l);
+
+//    auto *l2 = new PointLight(glm::vec3(0.f, 0.f, 3.f), glm::vec3(1), 1.f, 2.f);
+//    mLights.push_back(l2);
+//    mEntities.push_back(l2);
 }
 
 void RayTracer::update()

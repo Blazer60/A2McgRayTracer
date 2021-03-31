@@ -13,6 +13,7 @@
 
 #include "Camera.h"
 #include "Sphere.h"
+#include "Tri.h"
 #include "Entity.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
