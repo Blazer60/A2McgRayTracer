@@ -47,8 +47,9 @@ hitInfo Tri::isIntersecting(const Ray &ray)
     const float dot = glm::dot(ray.mDirection, mSurfaceNormal);
     if (dot == 0) { return { false }; }  // We are parallel with the triangle.
 
-    const float scalarToP = glm::dot((v0->globalPosition - ray.mPosition), mSurfaceNormal) / (dot);
+    const float scalarToP = glm::dot(v0->globalPosition - ray.mPosition, mSurfaceNormal) / (dot);
     if (scalarToP <= 0.f) { return { false }; }  // The ray went the opposite direction.
+    if (dot >= 0) { return { false }; }  // We are looking at the back of the triangle
 
     const glm::vec3 point = ray.mPosition + scalarToP * ray.mDirection;
 

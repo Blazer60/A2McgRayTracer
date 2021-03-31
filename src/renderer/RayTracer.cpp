@@ -56,10 +56,10 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
                               glm::vec3(0.8f),
                               64.f);
 //
-    actorLightingMaterial blue({0.f, 0.f, 0.7f},
-                              {0.2f, 0.2f, 0.2f},
-                              glm::vec3(0.3f),
-                              128.f);
+//    actorLightingMaterial blue({0.f, 0.f, 0.7f},
+//                              {0.2f, 0.2f, 0.2f},
+//                              glm::vec3(0.3f),
+//                              128.f);
 //
 //    auto *s1 = new Sphere({0.f, 1.73f, 7.f},
 //                          grey,
@@ -67,11 +67,11 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mPhysicalObjects.push_back(s1);
 //    mEntities.push_back(s1);
 //
-    auto *s2 = new Sphere({-1.f, 0.f, 7.f},
-                          blue,
-                          1);
-    mPhysicalObjects.push_back(s2);
-    mEntities.push_back(s2);
+//    auto *s2 = new Sphere({-1.f, 0.f, 7.f},
+//                          blue,
+//                          1);
+//    mPhysicalObjects.push_back(s2);
+//    mEntities.push_back(s2);
 //
 //    auto *s3 = new Sphere({1.f, 0.f, 7.f},
 //                          grey,
@@ -93,13 +93,13 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mEntities.push_back(s1);
 
     auto *vert = new vertex[3] {
-            vertex({-2.f, -1.f, 0.f}),
-            vertex({-1.f, 1.f, 0.f}),
             vertex({1.f, 0.f, 0.f}),
+            vertex({0.f, 0.f, 0.f}),
+            vertex({0.f, 1.f, 0.f}),
     };
 
-    auto *t = new Tri({3.f, 0.f, 6.f},
-                      {0.f, -1.f, 0.f},
+    auto *t = new Tri({0.f, 0.f, 6.f},
+                      {0.f, 0.f, 0.f},
                       {1.f, 1.f, 1.f},
                       red,
                       vert);
@@ -111,7 +111,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mLights.push_back(l);
     mEntities.push_back(l);
 
-//    auto *l2 = new PointLight(glm::vec3(0.f, 0.f, 3.f), glm::vec3(1), 1.f, 2.f);
+//    auto *l2 = new PointLight(glm::vec3(0.f, 0.f, 4.f), glm::vec3(1), 1.f, 2.f);
 //    mLights.push_back(l2);
 //    mEntities.push_back(l2);
 }
