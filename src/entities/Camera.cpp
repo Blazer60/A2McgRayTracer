@@ -87,6 +87,9 @@ Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
     nearPlane = mInvPrtMat * nearPlane;
     farPlane = mInvPrtMat * farPlane;
 
+    nearPlane.z *= -1;
+    farPlane.z *= -1;
+
     // Normalise the vector coords by their w component.
     nearPlane /= nearPlane.w;
     farPlane /= farPlane.w;
