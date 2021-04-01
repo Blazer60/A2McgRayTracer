@@ -29,6 +29,8 @@ public:
 
     Sphere(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial, const float &radius);
 
+    ~Sphere() override = default;
+
     void update(float deltaTime) override;
     hitInfo isIntersecting(const Ray &ray) override;
 

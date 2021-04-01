@@ -24,6 +24,8 @@ public:
     PointLight();
     PointLight(const glm::vec3 &pos, const glm::vec3 &colour, const float &intensity, const float &fallOff=1);
 
+    ~PointLight() override = default;
+
     Ray getRayToLight(glm::vec3 pos) override;
 
     lightingMaterial getInfo(glm::vec3 pos) override;

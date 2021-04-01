@@ -25,6 +25,8 @@ public:
     DirectionalLight();
     DirectionalLight(glm::vec3 direction, glm::vec3 colour, float intensity);
 
+    ~DirectionalLight() override = default;
+
     Ray getRayToLight(glm::vec3 pos) override;
 
     lightingMaterial getInfo(glm::vec3 pos) override;

@@ -48,6 +48,8 @@ public:
     Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
         const actorLightingMaterial &material, vertex *vertices, bool useVertexMat=false);
 
+    ~Tri() override = default;
+
     hitInfo isIntersecting(const Ray &ray) override;
 
     bool quickIsIntersecting(const Ray &ray) override;

@@ -43,6 +43,8 @@ public:
 
     LightSource(const glm::vec3 &colour, const float &intensity);
 
+    ~LightSource() override = default;
+
     void update(float deltaTime) override {};
 
     /**

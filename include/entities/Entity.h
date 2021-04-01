@@ -37,6 +37,8 @@ public:
     Entity();
     Entity(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &mScale);
 
+    virtual ~Entity() = default;
+
     virtual void update(float deltaTime) = 0;
 
     const glm::vec3 &getPosition() const

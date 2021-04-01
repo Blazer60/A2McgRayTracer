@@ -39,6 +39,8 @@ public:
     Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
            const glm::ivec2 &mScreenResolution, const float &mFovHalfAngle);
 
+    ~Camera() override = default;
+
     void update(float deltaTime) override;
     void updateMat();
 
