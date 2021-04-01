@@ -66,8 +66,11 @@ private:
     bool mUseVertexMaterial;
 
     // Lengths used for is intersecting function.
-    glm::vec3 mSideAc;
-    glm::vec3 mSideAb;
+    bool mUseXz;
+    float s1;
+    float s2;
+    float s3;
+    float s4;
 
     float mW1Denominator{};
 

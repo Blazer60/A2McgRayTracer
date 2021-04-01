@@ -15,11 +15,11 @@ Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::
          mVertices{vertices[0], vertices[1], vertices[2]},
          mUseVertexMaterial(useVertexMat)
 {
-    transformVertices();  // for safety.
-
     glm::vec3 ab = mVertices[1].position - mVertices[0].position;
     glm::vec3 ac = mVertices[2].position - mVertices[0].position;
     mSurfaceNormal = glm::normalize(glm::cross(ab, ac));
+
+    transformVertices();  // for safety.
 }
 
 void Tri::transformVertices()
@@ -50,23 +50,23 @@ hitInfo Tri::isIntersecting(const Ray &ray)
 
     const float scalarToP = glm::dot(v0->globalPosition - ray.mPosition, mSurfaceNormal) / (dot);
     if (scalarToP <= 0.f) { return { false }; }  // The ray went the opposite direction.
-    if (dot >= 0) { return { false }; }  // We are looking at the back of the triangle
+    //if (dot >= 0) { return { false }; }  // We are looking at the back of the triangle
 
     const glm::vec3 point = ray.mPosition + scalarToP * ray.mDirection;
 
     // Point in triangle
-    const float sideApHeight = point.y - v0->globalPosition.y;
+    const float s5 = mUseXz ? point.z - v0->globalPosition.z : point.y - v0->globalPosition.y;
 
-    float w1 = (v0->globalPosition.x * mSideAc.y - point.x * mSideAc.y + sideApHeight * mSideAc.x) / mW1Denominator;
+    float w1 = (v0->globalPosition.x * s1 + s5 * s2 - mVertices[2].globalPosition.x - s1) / mW1Denominator;
     float w2;
-    if (mSideAc.y != 0.f)
+    if (s1 != 0.f)
     {
-        w2 = (sideApHeight - w1 * mSideAb.y) / mSideAc.y;
+        w2 = (s5 - w1 * s3) / s1;
     }
     else
     {
         // A and C are vertically aligned so we can just normalise for w2.
-        w2 = normalise(point.x, mVertices[0].globalPosition.x, mVertices[1].globalPosition.x);
+        w2 = normalise(point.x, mVertices[0].globalPosition.x, mVertices[2].globalPosition.x);
     }
 
 
@@ -107,9 +107,25 @@ void Tri::update(float deltaTime)
 
 void Tri::constructCollisionEdges()
 {
-    mSideAb = mVertices[1].globalPosition - mVertices[0].globalPosition;
-    mSideAc = mVertices[2].globalPosition - mVertices[0].globalPosition;
-    mW1Denominator = mSideAb.y * mSideAc.x - mSideAb.x * mSideAc.y;
+    mUseXz =    mSurfaceNormal == glm::vec3(0.f, 1.f, 0.f)
+                || mSurfaceNormal == glm::vec3(0.f, -1.f, 0.f);
+    if (mUseXz)
+    {
+        // The Triangle is lying flat, so we'll use x and z instead.
+        s1 = mVertices[2].globalPosition.z - mVertices[0].globalPosition.z;
+        s2 = mVertices[2].globalPosition.x - mVertices[0].globalPosition.x;
+        s3 = mVertices[1].globalPosition.z - mVertices[0].globalPosition.z;
+        s4 = mVertices[1].globalPosition.x - mVertices[0].globalPosition.x;
+    }
+    else
+    {
+        s1 = mVertices[2].globalPosition.y - mVertices[0].globalPosition.y;
+        s2 = mVertices[2].globalPosition.x - mVertices[0].globalPosition.x;
+        s3 = mVertices[1].globalPosition.y - mVertices[0].globalPosition.y;
+        s4 = mVertices[1].globalPosition.x - mVertices[0].globalPosition.x;
+    }
+
+    mW1Denominator = (s3 * s2) - (s4 * s1);
 }
 
 actorLightingMaterial Tri::mix(const actorLightingMaterial &mat1, const actorLightingMaterial &mat2, const float &alpha)
