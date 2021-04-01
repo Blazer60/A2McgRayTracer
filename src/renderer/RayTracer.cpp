@@ -17,8 +17,8 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
 
     // Create some entities so that we can if things have worked.
-    mMainCamera = new Camera({0.f, 0.f, 0.f},
-                             {0.f, 0.f, 0.f},
+    mMainCamera = new Camera({0.f, 2.f, 0.f},
+                             {-0.1f, 0.f, 0.f},
                              {1.f, 1.f, 1.f},
                              mWindowSize,
                              22.5f);
@@ -56,10 +56,15 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
                               glm::vec3(0.8f),
                               64.f);
 //
-//    actorLightingMaterial blue({0.f, 0.f, 0.7f},
-//                              {0.2f, 0.2f, 0.2f},
-//                              glm::vec3(0.3f),
-//                              128.f);
+    actorLightingMaterial blue({0.f, 0.f, 1.f},
+                              {0.2f, 0.2f, 0.2f},
+                              glm::vec3(0.3f),
+                              128.f);
+
+    actorLightingMaterial green({0.f, 1.f, 0.f},
+                               {0.2f, 0.2f, 0.2f},
+                               glm::vec3(0.3f),
+                               128.f);
 //
 //    auto *s1 = new Sphere({0.f, 1.73f, 7.f},
 //                          grey,
@@ -93,21 +98,23 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
 //    mEntities.push_back(s1);
 
     auto *vert = new vertex[3] {
-            vertex({1.f, 0.f, 0.f}),
-            vertex({0.f, 0.f, 0.f}),
-            vertex({0.f, 1.f, 0.f}),
+            vertex({0.5f, 0.f, 0.f}, red),
+            vertex({-0.5f, 0.f, 0.f}, green),
+            vertex({0.f, 0.86f, 0.f}, blue),
     };
 
-    auto *t = new Tri({0.f, 0.f, 6.f},
-                      {0.f, 0.f, 0.f},
-                      {1.f, 1.f, 1.f},
-                      red,
-                      vert);
-    mPhysicalObjects.push_back(t);
-    mEntities.push_back(t);
+    auto *tri = new Tri({0.f, 0.f, 6.f},
+                        {0.f, 0.f, 0.f},
+                        {3.f, 3.f, 3.f},
+                        red,
+                        vert,
+                        true);
+    mEntities.push_back(tri);
+    mPhysicalObjects.push_back(tri);
+
 
     // Adding lights
-    auto *l = new DirectionalLight(glm::vec3(-0.4f, 0.5f, -1.f), glm::vec3(1), 1.f);
+    auto *l = new DirectionalLight(glm::vec3(0.f, -1.f, -1.f), glm::vec3(1), 1.f);
     mLights.push_back(l);
     mEntities.push_back(l);
 

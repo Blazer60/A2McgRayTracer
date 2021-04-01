@@ -27,8 +27,13 @@ struct vertex
 {
     glm::vec3 position;
     glm::vec3 globalPosition;
+    actorLightingMaterial material;
 
     explicit vertex(const glm::vec3 &position) : position(position)
+    {}
+
+    vertex(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial) :
+    position(position), material(lightingMaterial)
     {}
 };
 
@@ -41,7 +46,7 @@ class Tri : public Actor
 {
 public:
     Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-        const actorLightingMaterial &material, vertex *vertices);
+        const actorLightingMaterial &material, vertex *vertices, bool useVertexMat=false);
 
     hitInfo isIntersecting(const Ray &ray) override;
 
@@ -56,13 +61,20 @@ protected:
     void transformVertices();
 
 private:
-    // Lengths use for is intersecting function.
+    bool mUseVertexMaterial;
+
+    // Lengths used for is intersecting function.
     glm::vec3 mSideAc;
     glm::vec3 mSideAb;
 
     float mW1Denominator{};
 
     void constructCollisionEdges();
+
+    /** Mixes between mat1 and mat2 by alpha. */
+    static actorLightingMaterial mix(const actorLightingMaterial &mat1,
+                                     const actorLightingMaterial &mat2,
+                                     const float &alpha);
 };
 
 

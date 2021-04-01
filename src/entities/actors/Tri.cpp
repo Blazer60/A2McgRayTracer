@@ -10,9 +10,10 @@
 #include "Tri.h"
 
 Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-         const actorLightingMaterial &material, vertex *vertices) :
+         const actorLightingMaterial &material, vertex *vertices, bool useVertexMat) :
          Actor(mPosition, eulerRotation, mScale, material),
-         mVertices{vertices[0], vertices[1], vertices[2]}
+         mVertices{vertices[0], vertices[1], vertices[2]},
+         mUseVertexMaterial(useVertexMat)
 {
     transformVertices();  // for safety.
 
@@ -27,7 +28,7 @@ void Tri::transformVertices()
     glm::mat4 rotMat = glm::toMat4(mRotation);
     glm::mat4 scaleMat = glm::scale(mScale);
 
-    glm::mat4 transform =  translationMat * rotMat * scaleMat;
+    glm::mat4 transform = translationMat * rotMat * scaleMat;
 
 
     for (auto &vertex : mVertices)
@@ -72,11 +73,25 @@ hitInfo Tri::isIntersecting(const Ray &ray)
     if (w1 <= 0.f || w2 <= 0.f || w1 + w2 >= 1) { return { false }; } // Our point lies out side of the triangle.
 
     // We've hit the triangle
+
+    if (!mUseVertexMaterial)
+    {
+        return {  // Use the base material provided by the tri
+                true,
+                point,
+                mSurfaceNormal,
+                mMaterial
+        };
+    }
+
+    // lerp between the different materials at each vertex
+    actorLightingMaterial abLerp = mix(mVertices[0].material, mVertices[1].material, w1);
+    actorLightingMaterial abcLerp = mix(abLerp, mVertices[2].material, w2);
     return {
-        true,
-        point,
-        mSurfaceNormal,
-        mMaterial
+            true,
+            point,
+            mSurfaceNormal,
+            abcLerp
     };
 }
 
@@ -95,4 +110,18 @@ void Tri::constructCollisionEdges()
     mSideAb = mVertices[1].globalPosition - mVertices[0].globalPosition;
     mSideAc = mVertices[2].globalPosition - mVertices[0].globalPosition;
     mW1Denominator = mSideAb.y * mSideAc.x - mSideAb.x * mSideAc.y;
+}
+
+actorLightingMaterial Tri::mix(const actorLightingMaterial &mat1, const actorLightingMaterial &mat2, const float &alpha)
+{
+    const glm::vec3 alphaVec = glm::vec3(alpha);
+    return {
+        glm::mix(mat1.baseColour, mat2.baseColour, alphaVec),
+        glm::mix(mat1.ambientIntensity, mat2.ambientIntensity, alphaVec),
+        glm::mix(mat1.diffuseIntensity, mat2.diffuseIntensity, alphaVec),
+        glm::mix(mat1.specularIntensity, mat2.specularIntensity, alphaVec),
+        glm::mix(mat1.transmissionIntensity, mat2.transmissionIntensity, alphaVec),
+        glm::mix(mat1.reflectivityIntensity, mat2.transmissionIntensity, alphaVec),
+        glm::mix(mat1.shininessConstant, mat2.shininessConstant, alpha)
+    };
 }
