@@ -17,6 +17,7 @@
 #include "Entity.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SceneGenerator.h"
 
 #include "MCG_GFX_Lib.h"
 
@@ -33,6 +34,8 @@ class RayTracer
 public:
     explicit RayTracer(const glm::ivec2 &mWindowSize);
 
+    void changeScene(unsigned int index);
+
     void run();
     void updateAndHold();
     void update();
@@ -40,9 +43,9 @@ public:
 
 protected:
     /// The Camera in which the Rays are generated from.
-    Camera *mMainCamera;
+    Camera *mMainCamera{};
     std::vector<Entity*> mEntities;
-    std::vector<Actor*> mPhysicalObjects;
+    std::vector<Actor*> mActors;
     std::vector<LightSource*> mLights;
     glm::ivec2 mWindowSize;
 

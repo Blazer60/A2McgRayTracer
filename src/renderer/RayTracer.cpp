@@ -14,120 +14,33 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mWindowSize(mWindowSize)
     {
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
+    changeScene(0);
+}
 
-    // Create some entities so that we can if things have worked.
-    mMainCamera = new Camera({0.f, 2.f, 16.f},
-                             {0.f, 0.f, 0.f},
-                             {1.f, 1.f, 1.f},
-                             mWindowSize,
-                             22.5f);
-    mEntities.push_back(mMainCamera);
+void RayTracer::changeScene(unsigned int index)
+{
+    // Deallocate memory from the old scene.
+    if (!mEntities.empty())
+    {
+        for (auto &entity : mEntities)
+        {
+            delete entity;
+        }
+        // Possibly not needed?
+        mEntities.clear();
+        mActors.clear();
+        mLights.clear();
+        mMainCamera = nullptr;
+    }
 
-    actorLightingMaterial grey({0.3f, 0.3f, 0.3f},
-                               {0.1f, 0.1f, 0.1f},
-                               glm::vec3(0.05f),
-                               128.f);
-//
-    actorLightingMaterial red({1.f, 0.f, 0.f},
-                              {0.5f, 0.5f, 0.5f},
-                              glm::vec3(0.05f),
-                              64.f);
-//
-    actorLightingMaterial blue({0.f, 0.f, 1.f},
-                              {0.2f, 0.2f, 0.2f},
-                              glm::vec3(0.1f),
-                              128.f);
+    scene level = loadScene(mWindowSize, index);
+    if (!level.success) { throw std::exception(); }
 
-    actorLightingMaterial green({0.f, 1.f, 0.f},
-                               {0.2f, 0.2f, 0.2f},
-                               glm::vec3(0.0f),
-                               128.f);
-
-    actorLightingMaterial metalic(glm::vec3(0.0f),
-                                  glm::vec3(0.1f),
-                                  glm::vec3(0.8f),
-                                  50.f);
-//
-//    auto *s1 = new Sphere({0.f, 1.73f, 7.f},
-//                          metalic,
-//                          1);
-//    mPhysicalObjects.push_back(s1);
-//    mEntities.push_back(s1);
-//
-//    auto *s2 = new Sphere({-1.f, 0.f, 7.f},
-//                          blue,
-//                          1);
-//    mPhysicalObjects.push_back(s2);
-//    mEntities.push_back(s2);
-//
-//    auto *s3 = new Sphere({1.f, 0.f, 7.f},
-//                          green,
-//                          1);
-//    mPhysicalObjects.push_back(s3);
-//    mEntities.push_back(s3);
-//
-//    auto *s4 = new Sphere({0.f, -1.73f, 7.f},
-//                          red,
-//                          1);
-//    mPhysicalObjects.push_back(s4);
-//    mEntities.push_back(s4);
-
-    auto *s1 = new Sphere({0.f, 0.f, 7.f},
-                          metalic,
-                          1);
-    mPhysicalObjects.push_back(s1);
-    mEntities.push_back(s1);
-
-    auto *s2 = new Sphere({0.f, 0.f, 5.f},
-                          blue,
-                          1);
-    mPhysicalObjects.push_back(s2);
-    mEntities.push_back(s2);
-
-    auto *s3 = new Sphere({0.f, 0.f, 3.f},
-                          green,
-                          1);
-    mPhysicalObjects.push_back(s3);
-    mEntities.push_back(s3);
-
-    auto *s4 = new Sphere({0.f, 0.f, 1.f},
-                          red,
-                          1);
-    mPhysicalObjects.push_back(s4);
-    mEntities.push_back(s4);
-
-
-//    auto *s1 = new Sphere({0.f, 0.0f, 5.f},
-//                          {0.5f, 0.5f, 0.5f},
-//                          {0.2f, 0.2f, 0.2f},
-//                          1.f);
-//    mPhysicalObjects.push_back(s1);
-//    mEntities.push_back(s1);
-//
-//    auto *vert = new vertex[3] {
-//            vertex({0.5f, 0.f, 0.f}, red),
-//            vertex({-0.5f, 0.f, 0.f}, green),
-//            vertex({0.f, 0.86f, 0.f}, blue),
-//    };
-//
-//    auto *tri = new Tri({0.f, 0.f, 6.f},
-//                        {0.f, 0.f, 0.f},
-//                        {3.f, 3.f, 3.f},
-//                        red,
-//                        vert,
-//                        true);
-//    mEntities.push_back(tri);
-//    mPhysicalObjects.push_back(tri);
-
-
-    // Adding lights
-    auto *l = new DirectionalLight(glm::vec3(1.f, 2.f, 1.f), glm::vec3(1), 1.f);
-    mLights.push_back(l);
-    mEntities.push_back(l);
-
-//    auto *l2 = new PointLight(glm::vec3(0.f, 0.f, 4.f), glm::vec3(1), 1.f, 2.f);
-//    mLights.push_back(l2);
-//    mEntities.push_back(l2);
+    // Give ownership to the Ray Tracer
+    mEntities = level.entities;
+    mActors = level.actors;
+    mLights = level.lights;
+    mMainCamera = level.mainCamera;
 }
 
 void RayTracer::update()
@@ -206,6 +119,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     {
         // Construct a rayToLight and fire it towards the light
         Ray rayToLight = light->getRayToLight(hit.hitPosition);
+        rayToLight.mPosition += hit.hitNormal * 0.001f;
         if (!quickGetHitInWorld(rayToLight))
         {
             // Nothing was hit, so we can apply some shading.
@@ -241,7 +155,7 @@ hitInfo RayTracer::getHitInWorld(const Ray &ray)
     closestHit.hitPosition = glm::vec3 { 0.f };
     float closestHitLength(0);
     // Get the diffuse that the ray interception returns
-    for (auto &actor : mPhysicalObjects)
+    for (auto &actor : mActors)
     {
         hitInfo cur = actor->isIntersecting(ray);
         if (cur.hit)
@@ -268,7 +182,7 @@ hitInfo RayTracer::getHitInWorld(const Ray &ray)
 
 bool RayTracer::quickGetHitInWorld(const Ray &ray)
 {
-    for (auto &actor : mPhysicalObjects)
+    for (auto &actor : mActors)
     {
         if (actor->quickIsIntersecting(ray))
         {

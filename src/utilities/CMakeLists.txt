@@ -1,6 +1,6 @@
 add_library(Utilities
         raycast/Ray.cpp
-        geometry/Geometry.cpp)
+        geometry/Geometry.cpp SceneGenerator.cpp ../../include/utilities/SceneGenerator.h)
 
 target_include_directories(Utilities PUBLIC
         ${PROJECT_INCLUDE_DIR}/utilities
