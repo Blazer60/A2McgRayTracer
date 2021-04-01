@@ -81,7 +81,6 @@ void Sphere::update(float deltaTime)
         float offSet = glm::sin(mTime * mFrequency) * mAmplitude;
         mPosition.y = mStaticPos.y + offSet;
     }
-    std::cout << mPosition.x << ", " << mPosition.y << ", " << mPosition.z << std::endl;
 }
 
 void Sphere::init()
