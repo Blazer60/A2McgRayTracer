@@ -45,7 +45,24 @@ protected:
     std::vector<Actor*> mPhysicalObjects;
     std::vector<LightSource*> mLights;
     glm::ivec2 mWindowSize;
-    std::vector<glm::vec3> mPixelBuffer;
+
+    // Skybox Colours.
+
+    /** The colour of the ground below the horizon */
+    glm::vec3 mGroundColour { 0.408f, 0.380f, 0.357f };
+
+    /** The colour of the horizon */
+    glm::vec3 mHorizonColour { 0.482f, 0.937f, 0.976f };
+
+    /** The colour of the sky towards the bottom. */
+    glm::vec3 mSkyBottomColour { 0.008f, 0.725f, 1.f };
+
+    /** The colour of the sky when looking directly up */
+    glm::vec3 mSkyTopColour { 0.f, 0.059f, 0.486f };
+
+    const float mSkyBottomAngle { 0.08f };
+
+    glm::vec3 sampleSkybox(glm::vec3 rayDirection);
 
     /**
      * Tracers an "origin" ray into world space.
