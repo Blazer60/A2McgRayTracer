@@ -18,7 +18,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mShowSkybox(true)
     {
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
-    changeScene(0);
+    changeScene(Triangle);
 }
 
 void RayTracer::changeScene(unsigned int index)

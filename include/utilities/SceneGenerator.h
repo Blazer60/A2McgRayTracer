@@ -22,6 +22,7 @@
 enum sceneName
 {
     TheDefaultScene,
+    Triangle,
     NumberOfScenes
 };
 
