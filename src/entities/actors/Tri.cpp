@@ -57,7 +57,7 @@ hitInfo Tri::isIntersecting(const Ray &ray)
     // Point in triangle
     const float s5 = mUseXz ? point.z - v0->globalPosition.z : point.y - v0->globalPosition.y;
 
-    float w1 = (v0->globalPosition.x * s1 + s5 * s2 - mVertices[2].globalPosition.x - s1) / mW1Denominator;
+    float w1 = (v0->globalPosition.x * s1 + s5 * s2 - point.x - s1) / mW1Denominator;
     float w2;
     if (s1 != 0.f)
     {
