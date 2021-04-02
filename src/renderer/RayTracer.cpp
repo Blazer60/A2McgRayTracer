@@ -11,7 +11,11 @@
 #include "RayTracer.h"
 
 RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
-    mWindowSize(mWindowSize)
+    mWindowSize(mWindowSize),
+    mShowAmbient(true),
+    mShowDiffuse(true),
+    mShowSpecular(true),
+    mShowSkybox(true)
     {
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
     changeScene(0);
@@ -109,7 +113,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     if (!hit.hit)
     {
         ray.mEnergy = glm::vec3(0.f);
-        return sampleSkybox(ray.mDirection);
+        return mShowSkybox ? sampleSkybox(ray.mDirection) : glm::vec3(0.f);
     }
 
     // Diffuse Lighting
@@ -119,7 +123,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
     {
         // Construct a rayToLight and fire it towards the light
         Ray rayToLight = light->getRayToLight(hit.hitPosition);
-        rayToLight.mPosition += hit.hitNormal * 0.001f;
+        rayToLight.mPosition += hit.hitNormal * 0.001f;  // Offset to avoid artifacts from floating point precision.
         if (!quickGetHitInWorld(rayToLight))
         {
             // Nothing was hit, so we can apply some shading.
@@ -133,7 +137,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
             }
 
             // specular
-            glm::vec3 halfDir = glm::normalize(rayToLight.mDirection + (mMainCamera->getPosition() - hit.hitPosition));
+            glm::vec3 halfDir = glm::normalize(rayToLight.mDirection - ray.mDirection);
             dot = glm::pow(glm::dot(hit.hitNormal, halfDir), hit.material.shininessConstant);
             if (dot > 0)
             {
@@ -144,9 +148,12 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
 
     // Reflection Ray
     ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
-    ray.mPosition = hit.hitPosition;
+    ray.mPosition = hit.hitPosition + hit.hitNormal * 0.001f;  // Offset to avoid artifacts from floating point precision.
     ray.mEnergy = ray.mEnergy * hit.material.reflectivityIntensity;
-    return  hit.material.ambientIntensity + diffuseColour + specularColour;
+    // Times by booleans so that we can isolate channels
+    return  glm::vec3(mShowAmbient) * hit.material.ambientIntensity +
+            glm::vec3(mShowDiffuse) * diffuseColour +
+            glm::vec3(mShowSpecular) * specularColour;
 }
 
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
@@ -160,7 +167,7 @@ hitInfo RayTracer::getHitInWorld(const Ray &ray)
         hitInfo cur = actor->isIntersecting(ray);
         if (cur.hit)
         {
-            float hitDistance = -glm::length(closestHit.hitPosition - ray.mPosition);
+            float hitDistance = glm::length(cur.hitPosition - ray.mPosition);
             if (!closestHit.hit)
             {
                 closestHit = cur;

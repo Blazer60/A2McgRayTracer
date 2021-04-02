@@ -67,6 +67,12 @@ protected:
 
     glm::vec3 sampleSkybox(glm::vec3 rayDirection);
 
+    // Channels
+    bool mShowAmbient;
+    bool mShowDiffuse;
+    bool mShowSpecular;
+    bool mShowSkybox;
+
     /**
      * Tracers an "origin" ray into world space.
      * @param ray

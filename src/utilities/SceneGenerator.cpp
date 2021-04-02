@@ -18,7 +18,7 @@ namespace scenes
 
         // Create the main camera
         level.mainCamera = new Camera({ 0.f, 1.5f, 6.f },
-                                      { -0.1f, 0.f, 0.f },
+                                      { 0.f, 0.f, 0.f },
                                       { 1.f, 1.f, 1.f },
                                       screenSize,
                                       22.5
@@ -27,7 +27,7 @@ namespace scenes
         level.entities.push_back(level.mainCamera);
 
         // Lighting
-        auto *light = new DirectionalLight(glm::vec3(1.f, 2.f, 1.f),
+        auto *light = new DirectionalLight(glm::vec3(1.f, 1.f, 1.f),
                                            glm::vec3(1),
                                            1.f);
         level.lights.push_back(light);
@@ -35,18 +35,18 @@ namespace scenes
 
         // Ball
         actorLightingMaterial metallic(glm::vec3(0.f),
-                                      glm::vec3(0.1f),
+                                      glm::vec3(1.f),
                                       glm::vec3(0.8f),
                                       50.f);
 
-        auto *ball = new Sphere({ 0.f, 1.f, 0.f },
-                                metallic,
-                                1.f);
-        level.actors.push_back(ball);
-        level.entities.push_back(ball);
+        auto *ball2 = new Sphere({ 0.f, 1.f, 0.f },
+                                 metallic,
+                                 1.f);
+        level.actors.push_back(ball2);
+        level.entities.push_back(ball2);
 
         // Floor
-        actorLightingMaterial white(glm::vec3(0.8f),
+        actorLightingMaterial white(glm::vec3(0.9f),
                                     glm::vec3(0.1),
                                     glm::vec3(0.1f),
                                     50.f);
