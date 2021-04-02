@@ -10,7 +10,7 @@
 #include "Tri.h"
 
 Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-         const actorLightingMaterial &material, vertex *vertices, bool useVertexMat) :
+         const actorLightingMaterial &material, vertex *vertices, bool useVertexMat, bool flipNormal) :
          Actor(mPosition, eulerRotation, mScale, material),
          mVertices{vertices[0], vertices[1], vertices[2]},
          mUseVertexMaterial(useVertexMat)
@@ -18,7 +18,10 @@ Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::
     glm::vec3 ab = mVertices[1].position - mVertices[0].position;
     glm::vec3 ac = mVertices[2].position - mVertices[0].position;
     mSurfaceNormal = glm::normalize(glm::cross(ab, ac));
-
+    if (flipNormal)
+    {
+        mSurfaceNormal *= -1;
+    }
     transformVertices();  // for safety.
 }
 

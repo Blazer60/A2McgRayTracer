@@ -46,7 +46,7 @@ class Tri : public Actor
 {
 public:
     Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-        const actorLightingMaterial &material, vertex *vertices, bool useVertexMat=false);
+        const actorLightingMaterial &material, vertex *vertices, bool useVertexMat=false, bool flipNormal=false);
 
     ~Tri() override = default;
 
