@@ -13,15 +13,10 @@ Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::
          const actorLightingMaterial &material, vertex *vertices, bool useVertexMat, bool flipNormal) :
          Actor(mPosition, eulerRotation, mScale, material),
          mVertices{vertices[0], vertices[1], vertices[2]},
-         mUseVertexMaterial(useVertexMat)
+         mUseVertexMaterial(useVertexMat),
+         mFlipNormal(flipNormal)
 {
-    glm::vec3 ab = mVertices[1].position - mVertices[0].position;
-    glm::vec3 ac = mVertices[2].position - mVertices[0].position;
-    mSurfaceNormal = glm::normalize(glm::cross(ab, ac));
-    if (flipNormal)
-    {
-        mSurfaceNormal *= -1;
-    }
+
     transformVertices();  // for safety.
 }
 
@@ -33,11 +28,21 @@ void Tri::transformVertices()
 
     glm::mat4 transform = translationMat * rotMat * scaleMat;
 
-
+    // Transform vertices
     for (auto &vertex : mVertices)
     {
         vertex.globalPosition = transform * glm::vec4(vertex.position, 1);
     }
+
+    // Transform surface normal
+    glm::vec3 ab = mVertices[1].globalPosition - mVertices[0].globalPosition;
+    glm::vec3 ac = mVertices[2].globalPosition - mVertices[0].globalPosition;
+    mSurfaceNormal = glm::normalize(glm::cross(ab, ac));
+    if (mFlipNormal)
+    {
+        mSurfaceNormal *= -1;
+    }
+
     constructCollisionEdges();
 }
 

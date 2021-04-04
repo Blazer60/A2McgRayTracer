@@ -57,6 +57,7 @@ public:
     void update(float deltaTime) override;
 
 protected:
+    bool mFlipNormal;
     vertex mVertices[3];
     glm::vec3 mSurfaceNormal;
 
