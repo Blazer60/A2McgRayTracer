@@ -10,11 +10,10 @@
 #include "Tri.h"
 
 Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
-         const actorLightingMaterial &material, vertex *vertices, bool useVertexMat, bool flipNormal) :
+         const actorLightingMaterial &material, vertex *vertices, bool useVertexMat) :
          Actor(mPosition, eulerRotation, mScale, material),
          mVertices{vertices[0], vertices[1], vertices[2]},
-         mUseVertexMaterial(useVertexMat),
-         mFlipNormal(flipNormal)
+         mUseVertexMaterial(useVertexMat)
 {
 
     transformVertices();  // for safety.
@@ -38,10 +37,6 @@ void Tri::transformVertices()
     glm::vec3 ab = mVertices[1].globalPosition - mVertices[0].globalPosition;
     glm::vec3 ac = mVertices[2].globalPosition - mVertices[0].globalPosition;
     mSurfaceNormal = glm::normalize(glm::cross(ab, ac));
-    if (mFlipNormal)
-    {
-        mSurfaceNormal *= -1;
-    }
 
     constructCollisionEdges();
 }
@@ -58,7 +53,6 @@ hitInfo Tri::isIntersecting(const Ray &ray)
 
     const float scalarToP = glm::dot(v0->globalPosition - ray.mPosition, mSurfaceNormal) / (dot);
     if (scalarToP <= 0.f) { return { false }; }  // The ray went the opposite direction.
-    //if (dot >= 0) { return { false }; }  // We are looking at the back of the triangle
 
     const glm::vec3 point = ray.mPosition + scalarToP * ray.mDirection;
 
@@ -98,13 +92,13 @@ hitInfo Tri::isIntersecting(const Ray &ray)
     if (w1 <= 0.f || w2 <= 0.f || w1 + w2 >= 1) { return { false }; } // Our point lies out side of the triangle.
 
     // We've hit the triangle
-
+    glm::vec3 surfaceNorm = dot >= 0 ? -mSurfaceNormal : mSurfaceNormal; // Was it the back of the triangle or not?
     if (!mUseVertexMaterial)
     {
         return {  // Use the base material provided by the tri
                 true,
                 point,
-                mSurfaceNormal,
+                surfaceNorm,
                 mMaterial
         };
     }
@@ -115,7 +109,7 @@ hitInfo Tri::isIntersecting(const Ray &ray)
     return {
             true,
             point,
-            mSurfaceNormal,
+            surfaceNorm,
             abcLerp
     };
 }
