@@ -14,11 +14,6 @@ add_executable(${PROJECT_NAME}
 add_subdirectory(vendor)    # Add all third-party libraries
 add_subdirectory(src)       # and Src code to the project.
 
-#target_include_directories(${PROJECT_NAME} PUBLIC
-#        ${PROJECT_INCLUDE_DIR}
-#        ${PROJECT_INCLUDE_DIR}/entities
-#        )
-
 
 # Copies over all of SDL2 library dlls that are required for the program to run.
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD

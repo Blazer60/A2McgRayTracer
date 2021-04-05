@@ -5,7 +5,7 @@
 
 # SDL2 contains their own main function which can cause conflict with ours.
 # It can be disabled with this command.
-add_definitions(-DSDL_MAIN_HANDLED)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DSDL_MAIN_HANDLED)
 
 add_library(Vendor MCG_GFX/MCG_GFX_Lib.cpp)
 
