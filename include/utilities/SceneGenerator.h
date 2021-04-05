@@ -12,19 +12,27 @@
 #define A2MCGRAYTRACER_SCENEGENERATOR_H
 
 #include "Entity.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
+#include "LightSource.h"
 #include "Camera.h"
 #include "Actor.h"
 #include "Sphere.h"
 #include "Tri.h"
 
-enum sceneName
+namespace lvl
 {
-    TheDefaultScene,
-    Triangle,
-    NumberOfScenes
-};
+    enum sceneName
+    {
+        /** A highly reflective mirror-like sphere on top of a white plane made of two triangles. */
+        TheDefaultScene,
+
+        /** A RGB Triangle sat on a white plane. */
+        Triangle,
+
+        MirrorRoom,
+
+        NumberOfScenes
+    };
+}
 
 struct scene
 {

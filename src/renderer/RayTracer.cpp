@@ -18,7 +18,7 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mShowSkybox(true)
     {
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
-    changeScene(Triangle);
+    changeScene(lvl::MirrorRoom);
 }
 
 void RayTracer::changeScene(unsigned int index)
@@ -124,7 +124,28 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
         // Construct a rayToLight and fire it towards the light
         Ray rayToLight = light->getRayToLight(hit.hitPosition);
         rayToLight.mPosition += hit.hitNormal * 0.001f;  // Offset to avoid artifacts from floating point precision.
-        if (!quickGetHitInWorld(rayToLight))
+
+        bool gotToLight;
+        if (light->mType != light->Directional)
+        {
+            hitInfo lightHit = getHitInWorld(rayToLight);
+            if (lightHit.hit)
+            {
+                // if the light source is closer than the nearest hit.
+                gotToLight =    glm::length(rayToLight.mPosition - light->getPosition()) <
+                                glm::length(rayToLight.mPosition - lightHit.hitPosition);
+            }
+            else
+            {
+                gotToLight = true;
+            }
+        }
+        else
+        {
+            gotToLight = !quickGetHitInWorld(rayToLight);
+        }
+
+        if (gotToLight)
         {
             // Nothing was hit, so we can apply some shading.
             lightingMaterial lightInfo = light->getInfo(hit.hitPosition);

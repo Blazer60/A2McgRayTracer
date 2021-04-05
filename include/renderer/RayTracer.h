@@ -15,8 +15,7 @@
 #include "Sphere.h"
 #include "Tri.h"
 #include "Entity.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
+#include "LightSource.h"
 #include "SceneGenerator.h"
 
 #include "MCG_GFX_Lib.h"
