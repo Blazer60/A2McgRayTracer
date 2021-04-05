@@ -11,18 +11,48 @@
 
 #include "LightSource.h"
 
-LightSource::LightSource() :
-    Entity(),
-    mMaterial(glm::vec3(1.f))
+// Directional Light source
+LightSource::LightSource(const glm::vec3 &direction, const glm::vec3 &colour) :
+    Entity(), mType(Directional), mDirection(glm::normalize(direction)), mMaterial(colour), mIsFarAway(true), mFallOffConstant(0.f)
 {}
 
-LightSource::LightSource(const glm::vec3 &position, const glm::vec3 &colour,
-                         float intensity) :
-                         Entity(position, glm::vec3(0), glm::vec3(1)),
-                         mMaterial(colour * intensity)
+// Point Light source
+LightSource::LightSource(const glm::vec3 &position, const glm::vec3 &colour, const float &fallOff) :
+    Entity(position, glm::vec3(0.f), glm::vec3(1.f)), mType(Point),
+    mDirection(0.f), mMaterial(colour), mIsFarAway(false), mFallOffConstant(fallOff)
 {}
 
-LightSource::LightSource(const glm::vec3 &colour, const float &intensity) :
-    Entity(),
-    mMaterial(glm::vec3(colour * intensity))
-{}
+Ray LightSource::getRayToLight(glm::vec3 pos)
+{
+    switch (mType)
+    {
+        case Point:
+            return { pos, glm::normalize( mPosition - pos), glm::vec3(0.f) };
+        case Directional:
+        default:
+            // Zero energy stops extra rays being made towards lights source if accidentally done.
+            return { pos, mDirection, glm::vec3(0.f) };
+    }
+}
+
+lightingMaterial LightSource::getInfo(glm::vec3 pos)
+{
+    switch (mType)
+    {
+        case Point:
+        {
+            // Inverse square law.
+            glm::vec3 d = mPosition - pos;
+            float dDot = glm::dot(d, d);
+            glm::vec3 q = glm::vec3(mFallOffConstant / dDot);
+            return {
+                    mMaterial.baseColour,
+                    mMaterial.ambientIntensity,
+                    mMaterial.diffuseIntensity * q,
+                    mMaterial.specularIntensity * q
+            };
+        }
+        default:
+            return mMaterial;
+    }
+}

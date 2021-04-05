@@ -37,11 +37,12 @@ struct lightInfo
 class LightSource : public Entity
 {
 public:
-    LightSource();
 
-    LightSource(const glm::vec3 &position, const glm::vec3 &mColour, float mIntensity);
+    /** Directional Light */
+    LightSource(const glm::vec3 &direction, const glm::vec3 &colour);
 
-    LightSource(const glm::vec3 &colour, const float &intensity);
+    /** Point Light */
+    LightSource(const glm::vec3 &position, const glm::vec3 &colour, const float &fallOff);
 
     ~LightSource() override = default;
 
@@ -52,17 +53,27 @@ public:
      * @param pos
      * @return
      */
-    virtual Ray getRayToLight(glm::vec3 pos) = 0;
+    Ray getRayToLight(glm::vec3 pos);
 
     /**
      * Determines the intensity of light that reaches a position.
      * @param pos
      * @return
      */
-    virtual lightingMaterial getInfo(glm::vec3 pos) = 0;
+    lightingMaterial getInfo(glm::vec3 pos);
+
+    enum mTypes { Directional, Point };
+    int mType;
 
 protected:
     lightingMaterial mMaterial;
+    bool mIsFarAway;
+
+    // Directional light
+    glm::vec3 mDirection;
+
+    // Point light
+    float mFallOffConstant;
 };
 
 
