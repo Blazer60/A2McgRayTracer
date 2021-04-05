@@ -19,6 +19,8 @@
 #include "SceneGenerator.h"
 
 #include "MCG_GFX_Lib.h"
+#include "SDL.h"
+
 
 #include <memory>
 #include <vector>
@@ -37,10 +39,37 @@ public:
 
     void run();
     void updateAndHold();
+    void event();
     void update();
     void render();
 
 protected:
+    /**
+     * Tracers an "origin" ray into world space.
+     * @param ray
+     * @return The diffuse intensity from the ray.
+     */
+    glm::vec3 trace(Ray &ray);
+
+    /**
+     * Casts shadow rays to each light source in the scene.
+     * @param hitInfo
+     * @return
+     */
+    glm::vec3 traceShadows(Ray &ray, hitInfo &hit);
+
+    /**
+     * Gets the closest object to the ray's origin.
+     * If no object was hit, the default diffuse is the 'skybox'.
+     * @param ray
+     * @return Information about what was hit.
+     */
+    hitInfo getHitInWorld(const Ray &ray);
+
+    bool quickGetHitInWorld(const Ray &ray);
+
+
+
     /// The Camera in which the Rays are generated from.
     Camera *mMainCamera{};
     std::vector<Entity*> mEntities;
@@ -72,29 +101,13 @@ protected:
     bool mShowSpecular;
     bool mShowSkybox;
 
-    /**
-     * Tracers an "origin" ray into world space.
-     * @param ray
-     * @return The diffuse intensity from the ray.
-     */
-    glm::vec3 trace(Ray &ray);
+    int mBounceLimit{ 1 };
+    int mMaxBounceLimit{ 5 };
 
-    /**
-     * Casts shadow rays to each light source in the scene.
-     * @param hitInfo
-     * @return
-     */
-    glm::vec3 traceShadows(Ray &ray, hitInfo &hit);
-
-    /**
-     * Gets the closest object to the ray's origin.
-     * If no object was hit, the default diffuse is black.
-     * @param ray
-     * @return Information about what was hit.
-     */
-    hitInfo getHitInWorld(const Ray &ray);
-
-    bool quickGetHitInWorld(const Ray &ray);
+    // Information & user input
+    unsigned int mFrameCount{ 0 };
+    bool mIsRunning{ true };
+    unsigned int mCurrentScene{ 999 };
 };
 
 

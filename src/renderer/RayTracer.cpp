@@ -18,11 +18,13 @@ RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mShowSkybox(true)
     {
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
-    changeScene(lvl::MirrorRoom);
+    changeScene(lvl::TheDefaultScene);
 }
 
 void RayTracer::changeScene(unsigned int index)
 {
+    if (index == mCurrentScene) { return; }  // Already on the correct scene
+    mCurrentScene = index;
     // Deallocate memory from the old scene.
     if (!mEntities.empty())
     {
@@ -45,6 +47,40 @@ void RayTracer::changeScene(unsigned int index)
     mActors = level.actors;
     mLights = level.lights;
     mMainCamera = level.mainCamera;
+}
+
+void RayTracer::event()
+{
+    SDL_Event sdlEvent;
+
+    while (SDL_PollEvent(&sdlEvent) != 0)
+    {
+        if (sdlEvent.type == SDL_QUIT) { mIsRunning = false; }
+        if (sdlEvent.type == SDL_KEYDOWN)
+        {
+            switch (sdlEvent.key.keysym.sym)
+            {
+                case SDLK_ESCAPE:
+                    mIsRunning = false;
+                    break;
+                case SDLK_0:
+                    changeScene(lvl::TheDefaultScene);
+                    mFrameCount = 0;
+                    mBounceLimit = 1;
+                    break;
+                case SDLK_1:
+                    changeScene(lvl::Triangle);
+                    mFrameCount = 0;
+                    mBounceLimit = 1;
+                    break;
+                case SDLK_2:
+                    changeScene(lvl::MirrorRoom);
+                    mFrameCount = 0;
+                    mBounceLimit = 1;
+                    break;
+            }
+        }
+    }
 }
 
 void RayTracer::update()
@@ -84,18 +120,25 @@ void RayTracer::updateAndHold()
 
 void RayTracer::run()
 {
-    while (mcg::processFrame())
+    static unsigned int current = 0;
+    static unsigned int last = 0;
+    while (mcg::processFrame() && mIsRunning)
     {
         update();
         render();
-        std::cout << "Frame out" << std::endl;
+        event();  // overrides the event system within processFrame() depending on timing.
+        current = SDL_GetTicks();
+        float delta = (static_cast<float>(current - last)) / 1000.f;
+        last = current;
+        std::cout << "\rFrame: " << mFrameCount++ << "\tFrame Time: " << delta << "\tBounce Limit: " << mBounceLimit << "/" << mMaxBounceLimit;
+        mBounceLimit = glm::min(mMaxBounceLimit, mBounceLimit + 1);
     }
 }
 
 glm::vec3 RayTracer::trace(Ray &ray)
 {
     glm::vec3 colour(0);
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < mBounceLimit; ++i)
     {
         hitInfo hit = getHitInWorld(ray);
         glm::vec3 energy = ray.mEnergy;  // Shadow tracing changes the energy value for the next ray.
