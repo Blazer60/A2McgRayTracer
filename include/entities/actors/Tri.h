@@ -66,8 +66,11 @@ protected:
 private:
     bool mUseVertexMaterial;
 
+    // coord pair used when calculating point in triangle. Defaults to x-y
+    enum mUseCoordPair { Xy, Xz, Yz };
+    int mOrientation{ Xy };
+
     // Lengths used for is intersecting function.
-    bool mUseXz;
     float s1;
     float s2;
     float s3;

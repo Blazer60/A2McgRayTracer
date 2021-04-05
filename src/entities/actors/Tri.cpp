@@ -58,14 +58,29 @@ hitInfo Tri::isIntersecting(const Ray &ray)
 
     const float scalarToP = glm::dot(v0->globalPosition - ray.mPosition, mSurfaceNormal) / (dot);
     if (scalarToP <= 0.f) { return { false }; }  // The ray went the opposite direction.
-    if (dot >= 0) { return { false }; }  // We are looking at the back of the triangle
+    //if (dot >= 0) { return { false }; }  // We are looking at the back of the triangle
 
     const glm::vec3 point = ray.mPosition + scalarToP * ray.mDirection;
 
     // Point in triangle
-    const float s5 = mUseXz ? point.z - v0->globalPosition.z : point.y - v0->globalPosition.y;
+    float s5, w1;
+    switch (mOrientation)
+    {
+        case Xy:
+        default:
+            s5 = point.y - v0->globalPosition.y;
+            w1 = (v0->globalPosition.x * s1 + s5 * s2 - point.x * s1) / mW1Denominator;
+            break;
+        case Xz:
+            s5 = point.z - v0->globalPosition.z;
+            w1 = (v0->globalPosition.x * s1 + s5 * s2 - point.x * s1) / mW1Denominator;
+            break;
+        case Yz:
+            s5 = point.z - v0->globalPosition.z;
+            w1 = (v0->globalPosition.y * s1 + s5 * s2 - point.y * s1) / mW1Denominator;
+            break;
+    }
 
-    float w1 = (v0->globalPosition.x * s1 + s5 * s2 - point.x * s1) / mW1Denominator;
     float w2;
     if (s1 != 0.f)
     {
@@ -74,7 +89,9 @@ hitInfo Tri::isIntersecting(const Ray &ray)
     else
     {
         // A and C are vertically aligned so we can just normalise for w2.
-        w2 = normalise(point.x, mVertices[0].globalPosition.x, mVertices[2].globalPosition.x);
+        w2 = mOrientation == Yz ?
+                normalise(point.y, mVertices[0].globalPosition.y, mVertices[2].globalPosition.y) :
+                normalise(point.x, mVertices[0].globalPosition.x, mVertices[2].globalPosition.x);
     }
 
 
@@ -115,18 +132,35 @@ void Tri::update(float deltaTime)
 
 void Tri::constructCollisionEdges()
 {
-    mUseXz =    mSurfaceNormal == glm::vec3(0.f, 1.f, 0.f)
-                || mSurfaceNormal == glm::vec3(0.f, -1.f, 0.f);
-    if (mUseXz)
+    // The triangle lies flat.
+    if (mSurfaceNormal == glm::vec3(0.f, 1.f, 0.f)
+        || mSurfaceNormal == glm::vec3(0.f, -1.f, 0.f))
     {
-        // The Triangle is lying flat, so we'll use x and z instead.
+        mOrientation = Xz;  // use X and Z for point in triangle.
+
         s1 = mVertices[2].globalPosition.z - mVertices[0].globalPosition.z;
         s2 = mVertices[2].globalPosition.x - mVertices[0].globalPosition.x;
         s3 = mVertices[1].globalPosition.z - mVertices[0].globalPosition.z;
         s4 = mVertices[1].globalPosition.x - mVertices[0].globalPosition.x;
     }
+
+    // The triangle is vertical.
+    else if (mSurfaceNormal == glm::vec3(1.f, 0.f, 0.f)
+            || mSurfaceNormal == glm::vec3(-1.f, 0.f, 0.f))
+    {
+        mOrientation = Yz;  // use Y and Z for point in triangle
+
+        s1 = mVertices[2].globalPosition.z - mVertices[0].globalPosition.z;
+        s2 = mVertices[2].globalPosition.y - mVertices[0].globalPosition.y;
+        s3 = mVertices[1].globalPosition.z - mVertices[0].globalPosition.z;
+        s4 = mVertices[1].globalPosition.y - mVertices[0].globalPosition.y;
+    }
+
+    // Default case
     else
     {
+        mOrientation = Xy;  // use X and Y for point in triangle
+
         s1 = mVertices[2].globalPosition.y - mVertices[0].globalPosition.y;
         s2 = mVertices[2].globalPosition.x - mVertices[0].globalPosition.x;
         s3 = mVertices[1].globalPosition.y - mVertices[0].globalPosition.y;
