@@ -1,52 +1,50 @@
 /**
  * @file RayTracer.cpp.cc
- * @brief [fill in this secton]
+ * @brief The renderer that displays the world to the screen.
  * Project: A2McgRayTracer
  * @author Ryan Purse
  * @version 1.0.0
  * Initial Version: 18/03/2021
  */
 
-#include <iostream>
 #include "RayTracer.h"
 
 RayTracer::RayTracer(const glm::ivec2 &mWindowSize) :
     mWindowSize(mWindowSize),
-    mShowAmbient(true),
-    mShowDiffuse(true),
-    mShowSpecular(true),
-    mShowSkybox(true)
-    {
+    mShowAmbient(true), mShowDiffuse(true), mShowSpecular(true), mShowSkybox(true)
+{
     if(!mcg::init(mWindowSize)) { throw std::exception(); }
     changeScene(lvl::TheDefaultScene);
 }
 
-void RayTracer::changeScene(unsigned int index)
+void RayTracer::run()
 {
-    if (index == mCurrentScene) { return; }  // Already on the correct scene
-    mCurrentScene = index;
-    // Deallocate memory from the old scene.
-    if (!mEntities.empty())
+    static unsigned int current = 0;
+    static unsigned int last = 0;
+
+    while (mcg::processFrame() && mIsRunning)
     {
-        for (auto &entity : mEntities)
-        {
-            delete entity;
-        }
-        // Possibly not needed?
-        mEntities.clear();
-        mActors.clear();
-        mLights.clear();
-        mMainCamera = nullptr;
+        update();
+        render();
+        event();  // overrides the event system within mcg::processFrame() depending on timing.
+
+        // Get how long the frame took with some useful information
+        current = SDL_GetTicks();
+        float delta = (static_cast<float>(current - last)) / 1000.f;
+        last = current;
+        std::cout   << "\rFrame: " << mFrameCount++
+                    << "\tFrame Time: " << delta
+                    << "\tBounce Limit: " << mBounceLimit << "/" << mMaxBounceLimit;
+        // Try and increase the bounce limit of the rays.
+        mBounceLimit = glm::min(mMaxBounceLimit, mBounceLimit + 1);
     }
+}
 
-    scene level = loadScene(mWindowSize, index);
-    if (!level.success) { throw std::exception(); }
-
-    // Give ownership to the Ray Tracer
-    mEntities = level.entities;
-    mActors = level.actors;
-    mLights = level.lights;
-    mMainCamera = level.mainCamera;
+void RayTracer::updateAndHold()
+{
+    update();
+    render();
+    mcg::showAndHold();  // Waits until the user exits the program.
 }
 
 void RayTracer::event()
@@ -87,7 +85,7 @@ void RayTracer::update()
 {
     for (auto &entity : mEntities)
     {
-        entity->update(0.1f);
+        entity->update(0.16f);  // Updates as if it was running at 60fps.
     }
 }
 
@@ -98,7 +96,9 @@ void RayTracer::render()
     {
         for (int x = 0; x < mWindowSize.x; ++x)
         {
+            // Pair the coord together.
             glm::ivec2 pixelPosition(x, y);
+
             // Create a ray from our camera
             Ray ray = mMainCamera->generateSingleRay(pixelPosition);
 
@@ -111,38 +111,48 @@ void RayTracer::render()
     }
 }
 
-void RayTracer::updateAndHold()
+void RayTracer::changeScene(unsigned int index)
 {
-    update();
-    render();
-    mcg::showAndHold();
-}
-
-void RayTracer::run()
-{
-    static unsigned int current = 0;
-    static unsigned int last = 0;
-    while (mcg::processFrame() && mIsRunning)
+    if (index == mCurrentScene) { return; }  // Already on the correct scene
+    mCurrentScene = index;
+    // Deallocate memory from the old scene.
+    if (!mEntities.empty())
     {
-        update();
-        render();
-        event();  // overrides the event system within processFrame() depending on timing.
-        current = SDL_GetTicks();
-        float delta = (static_cast<float>(current - last)) / 1000.f;
-        last = current;
-        std::cout << "\rFrame: " << mFrameCount++ << "\tFrame Time: " << delta << "\tBounce Limit: " << mBounceLimit << "/" << mMaxBounceLimit;
-        mBounceLimit = glm::min(mMaxBounceLimit, mBounceLimit + 1);
+        for (auto &entity : mEntities)
+        {
+            delete entity;
+        }
+        // Reset vectors back to zero elements. Possibly not needed since we use a copy constructor later on.
+        mEntities.clear();
+        mActors.clear();
+        mLights.clear();
+        mMainCamera = nullptr;
     }
+
+    scene level = loadScene(mWindowSize, index);
+    if (!level.success) { throw std::exception(); }  // The scene doesn't exits. Should never get here.
+
+    // Give ownership to the Ray Tracer
+    mEntities = level.entities;
+    mActors = level.actors;
+    mLights = level.lights;
+    mMainCamera = level.mainCamera;
 }
 
-glm::vec3 RayTracer::trace(Ray &ray)
+glm::vec3 RayTracer::trace(Ray &originRay)
 {
     glm::vec3 colour(0);
+    Ray ray = originRay;
     for (int i = 0; i < mBounceLimit; ++i)
     {
         hitInfo hit = getHitInWorld(ray);
-        glm::vec3 energy = ray.mEnergy;  // Shadow tracing changes the energy value for the next ray.
-        colour += energy * traceShadows(ray, hit);  // Trace shadow will also reflect the ray
+
+        // Shadow tracing changes the energy value for the next ray so we take a copy now.
+        glm::vec3 energy = ray.mEnergy;
+
+        // Trace shadow will also reflect the ray.
+        colour += energy * traceShadows(ray, hit);
+
         if (glm::dot(ray.mEnergy, ray.mEnergy) < 0.f)
         {
             break;
@@ -151,7 +161,7 @@ glm::vec3 RayTracer::trace(Ray &ray)
     return colour;
 }
 
-glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
+glm::vec3 RayTracer::traceShadows(Ray &ray, const hitInfo &hit)
 {
     if (!hit.hit)
     {
@@ -159,7 +169,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
         return mShowSkybox ? sampleSkybox(ray.mDirection) : glm::vec3(0.f);
     }
 
-    // Diffuse Lighting
+    // Lighting Calculation.
     glm::vec3 diffuseColour(0);
     glm::vec3 specularColour(0);
     for (auto &light : mLights)
@@ -168,27 +178,7 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
         Ray rayToLight = light->getRayToLight(hit.hitPosition);
         rayToLight.mPosition += hit.hitNormal * 0.001f;  // Offset to avoid artifacts from floating point precision.
 
-        bool gotToLight;
-        if (light->mType != light->Directional)
-        {
-            hitInfo lightHit = getHitInWorld(rayToLight);
-            if (lightHit.hit)
-            {
-                // if the light source is closer than the nearest hit.
-                gotToLight =    glm::length(rayToLight.mPosition - light->getPosition()) <
-                                glm::length(rayToLight.mPosition - lightHit.hitPosition);
-            }
-            else
-            {
-                gotToLight = true;
-            }
-        }
-        else
-        {
-            gotToLight = !quickGetHitInWorld(rayToLight);
-        }
-
-        if (gotToLight)
+        if (traceToLightSource(rayToLight, light))
         {
             // Nothing was hit, so we can apply some shading.
             lightingMaterial lightInfo = light->getInfo(hit.hitPosition);
@@ -210,18 +200,40 @@ glm::vec3 RayTracer::traceShadows(Ray &ray, hitInfo &hit)
         }
     }
 
-    // Reflection Ray
-    ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
-    ray.mPosition = hit.hitPosition + hit.hitNormal * 0.001f;  // Offset to avoid artifacts from floating point precision.
-    ray.mEnergy = ray.mEnergy * hit.material.reflectivityIntensity;
+    reflectRay(ray, hit);
+
     // Times by booleans so that we can isolate channels
     return  glm::vec3(mShowAmbient) * hit.material.ambientIntensity +
             glm::vec3(mShowDiffuse) * diffuseColour +
             glm::vec3(mShowSpecular) * specularColour;
 }
 
+bool RayTracer::traceToLightSource(const Ray &ray, const LightSource *lightSource)
+{
+    if (lightSource->mType != lightSource->Directional)  // The light source is not infinitely far away.
+    {
+        hitInfo lightHit = getHitInWorld(ray);
+        if (lightHit.hit)
+        {
+            // Is the light source closer than the nearest hit?
+            return (glm::length(ray.mPosition - lightSource->getPosition()) <
+                    glm::length(ray.mPosition - lightHit.hitPosition));
+        }
+        return true;  // Nothing was hit. Therefore clear line of sight.
+    }
+    return !quickGetHitInWorld(ray);  // Directional Lights can use quick hit instead.
+}
+
+void RayTracer::reflectRay(Ray &ray, const hitInfo &hit)
+{
+    ray.mDirection = glm::reflect(ray.mDirection, hit.hitNormal);
+    ray.mPosition = hit.hitPosition + hit.hitNormal * 0.001f;  // Offset to avoid artifacts from floating point precision.
+    ray.mEnergy = ray.mEnergy * hit.material.reflectivityIntensity;
+}
+
 hitInfo RayTracer::getHitInWorld(const Ray &ray)
 {
+    // Brute force method of obtaining the closest hit object in the world.
     hitInfo closestHit{ false };
     closestHit.hitPosition = glm::vec3 { 0.f };
     float closestHitLength(0);
@@ -253,6 +265,7 @@ hitInfo RayTracer::getHitInWorld(const Ray &ray)
 
 bool RayTracer::quickGetHitInWorld(const Ray &ray)
 {
+    // Brute force method to see if a ray is ever obstructed.
     for (auto &actor : mActors)
     {
         if (actor->quickIsIntersecting(ray))
