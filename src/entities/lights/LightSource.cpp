@@ -13,13 +13,13 @@
 
 // Directional Light source
 LightSource::LightSource(const glm::vec3 &direction, const glm::vec3 &colour) :
-    Entity(), mType(Directional), mDirection(glm::normalize(direction)), mMaterial(colour), mIsFarAway(true), mFallOffConstant(0.f)
+    Entity(), mType(Directional), mDirection(glm::normalize(direction)), mMaterial(colour), mFallOffConstant(0.f)
 {}
 
 // Point Light source
 LightSource::LightSource(const glm::vec3 &position, const glm::vec3 &colour, const float &fallOff) :
     Entity(position, glm::vec3(0.f), glm::vec3(1.f)), mType(Point),
-    mDirection(0.f), mMaterial(colour), mIsFarAway(false), mFallOffConstant(fallOff)
+    mDirection(0.f), mMaterial(colour), mFallOffConstant(fallOff)
 {}
 
 Ray LightSource::getRayToLight(glm::vec3 pos)
@@ -27,11 +27,10 @@ Ray LightSource::getRayToLight(glm::vec3 pos)
     switch (mType)
     {
         case Point:
-            return { pos, glm::normalize( mPosition - pos), glm::vec3(0.f) };
+            return { pos, glm::normalize( mPosition - pos) };
         case Directional:
         default:
-            // Zero energy stops extra rays being made towards lights source if accidentally done.
-            return { pos, mDirection, glm::vec3(0.f) };
+            return { pos, mDirection };
     }
 }
 
