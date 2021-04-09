@@ -16,9 +16,6 @@
 
 #include "glm.hpp"
 
-glm::vec3 getClosestPoint(const Ray &ray, const glm::vec3 &point);
-hitInfo raySphereIntersection(const Ray &ray, const glm::vec3 &point, const float &radius);
-
 /**
  * Used to normalise a value between a range. There are no bound checks
  * for value x. Additionally, lB and uB do not have to be the correct way
