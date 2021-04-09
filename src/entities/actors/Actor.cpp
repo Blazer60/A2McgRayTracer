@@ -9,9 +9,9 @@
  
 #include "Actor.h"
 
-Actor::Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
+Actor::Actor(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &scale,
              const actorLightingMaterial &material) :
-             Entity(mPosition, eulerRotation, mScale),
+             Entity(position, eulerRotation, scale),
              mMaterial(material)
 {}
 

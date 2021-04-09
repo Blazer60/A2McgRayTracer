@@ -8,7 +8,6 @@
  */
 
 
-#include <iostream>
 #include "Sphere.h"
 
 Sphere::Sphere() : Actor(), mRadius(5), mIsBobbing(false)
@@ -29,12 +28,12 @@ hitInfo Sphere::isIntersecting(const Ray &ray)
     glm::vec3 delta = mPosition - ray.mPosition;
     float deltaDot = glm::dot(delta, ray.mDirection);
 
-    if (deltaDot < 0) { return { false, {}, {}, {} }; }  // The ray went backward so we won't hit anything
+    if (deltaDot < 0) { return { false }; }  // The ray went backward so we won't hit anything
 
     const float closestPoint = glm::length(delta - (deltaDot * ray.mDirection));
 
     // The ray did not intersect so we don't need to calculate the colours, position and hit normal.
-    if (closestPoint > mRadius) { return { false, {}, {}, {} }; }
+    if (closestPoint > mRadius) { return { false }; }
 
     // Work out the position that the ray intercepted the sphere.
     const float x = glm::sqrt(mRadius * mRadius - closestPoint * closestPoint);

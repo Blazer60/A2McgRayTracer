@@ -12,10 +12,10 @@
 #define A2MCGRAYTRACER_ACTOR_H
 
 #include "Entity.h"
-#include "glm.hpp"
 #include "Ray.h"
 #include "LightingMaterials.h"
 
+#include "glm.hpp"
 /**
  * An object in world space that can be seen by the camera.
  * Actors by default are set to pink.
@@ -29,18 +29,13 @@ public:
 
     Actor(const glm::vec3 &position, const actorLightingMaterial &lightingMaterial);
 
-    Actor(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
+    Actor(const glm::vec3 &position, const glm::vec3 &eulerRotation, const glm::vec3 &scale,
           const actorLightingMaterial &material);
 
     ~Actor() override = default;
 
     virtual hitInfo isIntersecting(const Ray &ray) = 0;
     virtual bool quickIsIntersecting(const Ray &ray) = 0;
-
-    const glm::vec3 &getColour() const
-    {
-        return mMaterial.diffuseIntensity;
-    }
 
 protected:
     actorLightingMaterial mMaterial;

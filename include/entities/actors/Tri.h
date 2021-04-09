@@ -61,8 +61,6 @@ protected:
     glm::vec3 mSurfaceNormal;
 
     void transformVertices();
-
-private:
     bool mUseVertexMaterial;
 
     // coord pair used when calculating point in triangle. Defaults to x-y
@@ -70,12 +68,8 @@ private:
     int mOrientation{ Xy };
 
     // Lengths used for is intersecting function.
-    float s1;
-    float s2;
-    float s3;
-    float s4;
-
-    float mW1Denominator{};
+    float s1, s2, s3, s4;
+    float mW1Denominator;
 
     void constructCollisionEdges();
 

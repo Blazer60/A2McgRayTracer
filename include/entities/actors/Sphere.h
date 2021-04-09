@@ -36,11 +36,6 @@ public:
 
     bool quickIsIntersecting(const Ray &ray) override;
 
-    float getRadius() const
-    {
-        return mRadius;
-    }
-
 protected:
     float mRadius;
 

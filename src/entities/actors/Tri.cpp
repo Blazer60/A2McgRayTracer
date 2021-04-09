@@ -12,7 +12,7 @@
 Tri::Tri(const glm::vec3 &mPosition, const glm::vec3 &eulerRotation, const glm::vec3 &mScale,
          const actorLightingMaterial &material, vertex *vertices, bool useVertexMat) :
          Actor(mPosition, eulerRotation, mScale, material),
-         mVertices{vertices[0], vertices[1], vertices[2]},
+         mVertices{ vertices[0], vertices[1], vertices[2] },
          mUseVertexMaterial(useVertexMat)
 {
 
