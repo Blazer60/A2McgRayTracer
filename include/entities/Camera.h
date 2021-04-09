@@ -35,32 +35,32 @@
 class Camera : public Entity
 {
 public:
-    explicit Camera(const glm::ivec2 &mScreenResolution);
-    Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
-           const glm::ivec2 &mScreenResolution, const float &mFovHalfAngle);
+    explicit Camera(const glm::ivec2 &screenResolution);
+    Camera(const glm::vec3 &position, const glm::vec3 &eulerAngle, const glm::vec3 &scale,
+           const glm::ivec2 &screenResolution, const float &fovHalfAngle);
 
     ~Camera() override = default;
 
     void update(float deltaTime) override;
     void updateMat();
 
-    std::vector<Ray> generateRays();
-
-    /// Creates a ray based on the pixel position on the screen and the matrix transform of the camera.
+    /** Creates a ray based on the pixel position on the screen and the matrix transform of the camera. */
     Ray generateSingleRay(const glm::ivec2 &pixelPos);
 
 protected:
-    glm::ivec2 mScreenResolution;
-    float mAspectRatio;
-    float mFovHalfAngle;
+    const glm::ivec2 mScreenResolution;
+    const float mAspectRatio;
+    const float mFovYHalfAngle;
+
 private:
     glm::mat4 mRotationMat;
     glm::mat4 mTranslationMat;
     glm::mat4 mInvProjectionMat;
 
+    /** Rotation mat, translation mat and inverse projection mat all in one. */
     glm::mat4 mInvPrtMat;
 
-    /// Generates the InvProjectionMat on creation
+    /** Generates the InvProjectionMat on creation */
     void init();
 };
 

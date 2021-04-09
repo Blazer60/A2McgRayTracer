@@ -8,23 +8,23 @@
  * Initial Version: 18/03/2021
  */
 
-#include <iostream>
 #include "Camera.h"
 
-Camera::Camera(const glm::vec3 &mPosition, const glm::vec3 &eulerAngle, const glm::vec3 &mScale,
-               const glm::ivec2 &mScreenResolution, const float &mFovHalfAngle) :
-               Entity(mPosition, eulerAngle, mScale),
-               mScreenResolution(mScreenResolution),
-               mAspectRatio(static_cast<float>(mScreenResolution.x) / static_cast<float>(mScreenResolution.y)),
-               mFovHalfAngle(mFovHalfAngle)
+Camera::Camera(const glm::vec3 &position, const glm::vec3 &eulerAngle, const glm::vec3 &scale,
+               const glm::ivec2 &screenResolution, const float &fovHalfAngle) :
+               Entity(position, eulerAngle, scale),
+               mScreenResolution(screenResolution),
+               mAspectRatio(static_cast<float>(screenResolution.x) / static_cast<float>(screenResolution.y)),
+               mFovYHalfAngle(fovHalfAngle)
 {
     init();
 }
 
-Camera::Camera(const glm::ivec2 &mScreenResolution) : Entity(),
-    mScreenResolution(mScreenResolution),
-    mAspectRatio(static_cast<float>(mScreenResolution.x) / static_cast<float>(mScreenResolution.y)),
-    mFovHalfAngle(22.5f)
+Camera::Camera(const glm::ivec2 &screenResolution) :
+    Entity(),
+    mScreenResolution(screenResolution),
+    mAspectRatio(static_cast<float>(screenResolution.x) / static_cast<float>(screenResolution.y)),
+    mFovYHalfAngle(22.5f)
 {
     init();
 }
@@ -32,12 +32,12 @@ Camera::Camera(const glm::ivec2 &mScreenResolution) : Entity(),
 void Camera::init()
 {
     mInvProjectionMat = glm::perspective(
-            glm::radians(mFovHalfAngle * 2),
+            glm::radians(mFovYHalfAngle * 2),
             mAspectRatio,
             0.1f,
             100.f);
 
-    mInvProjectionMat = glm::inverse(mInvProjectionMat);  // This is deadly to performance.
+    mInvProjectionMat = glm::inverse(mInvProjectionMat);
 }
 
 void Camera::update(float deltaTime)
@@ -51,21 +51,7 @@ void Camera::updateMat()
     mRotationMat = glm::toMat4(mRotation);
     mTranslationMat = glm::translate(mPosition);
 
-    // Multiply the coords by the inverse perspective mat to give the typical view frustum.
     mInvPrtMat = mTranslationMat * mRotationMat * mInvProjectionMat;
-}
-
-std::vector<Ray> Camera::generateRays()
-{
-    std::vector<Ray> rays;
-    for (int j = 0; j < mScreenResolution.y; ++j)
-    {
-        for (int i = 0; i < mScreenResolution.x; ++i)
-        {
-            rays.push_back(generateSingleRay({i, j}));  // TODO: could be the wrong way round??
-        }
-    }
-    return rays;
 }
 
 Ray Camera::generateSingleRay(const glm::ivec2 &pixelPos)
