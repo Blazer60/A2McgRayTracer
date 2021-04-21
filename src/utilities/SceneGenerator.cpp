@@ -337,6 +337,40 @@ namespace scenes
 
         return level;
     }
+
+    scene level4(const glm::ivec2 &screenSize)
+    {
+        scene level { true };
+
+        // Create the main camera
+        level.mainCamera = new Camera({ 0.f, 1.5f, 6.f },
+                                      { 0.f, 0.f, 0.f },
+                                      { 1.f, 1.f, 1.f },
+                                      screenSize,
+                                      22.5
+        );
+        level.cameras.push_back(level.mainCamera);
+        level.entities.push_back(level.mainCamera);
+
+        // Lighting
+        auto *light = new LightSource(glm::vec3(1.f, 1.f, 1.f),glm::vec3(1));
+        level.lights.push_back(light);
+        level.entities.push_back(light);
+
+        // Ball
+        actorLightingMaterial material(glm::vec3(0.5f, 0.f, 0.5f),
+                                       glm::vec3(0.1f),
+                                       glm::vec3(0.0f),
+                                       50.f);
+
+        auto *ball = new Sphere({ 0.f, 1.f, 0.f },
+                                material,
+                                1.f);
+        level.actors.push_back(ball);
+        level.entities.push_back(ball);
+
+        return level;
+    }
 }
 
 scene loadScene(const glm::ivec2 &screenSize, unsigned int index)
@@ -351,5 +385,7 @@ scene loadScene(const glm::ivec2 &screenSize, unsigned int index)
             return scenes::level2(screenSize);
         case 2:
             return scenes::level3(screenSize);
+        case 3:
+            return scenes::level4(screenSize);
     }
 }

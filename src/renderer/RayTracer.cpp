@@ -76,6 +76,10 @@ void RayTracer::event()
                     mFrameCount = 0;
                     mBounceLimit = 1;
                     break;
+                case SDLK_3:
+                    changeScene(lvl::BasicBall);
+                    mFrameCount = 0;
+                    mBounceLimit = 1;
             }
         }
     }

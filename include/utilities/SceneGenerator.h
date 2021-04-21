@@ -30,6 +30,8 @@ namespace lvl
 
         MirrorRoom,
 
+        BasicBall,
+
         NumberOfScenes
     };
 }
