@@ -343,7 +343,7 @@ namespace scenes
         scene level { true };
 
         // Create the main camera
-        level.mainCamera = new Camera({ 0.f, 1.5f, 6.f },
+        level.mainCamera = new Camera({ 0.f, 0.f, 6.f },
                                       { 0.f, 0.f, 0.f },
                                       { 1.f, 1.f, 1.f },
                                       screenSize,
@@ -353,19 +353,27 @@ namespace scenes
         level.entities.push_back(level.mainCamera);
 
         // Lighting
-        auto *light = new LightSource(glm::vec3(1.f, 1.f, 1.f),glm::vec3(1));
-        level.lights.push_back(light);
-        level.entities.push_back(light);
+//        auto *light = new LightSource(glm::vec3(1.f, 1.f, 1.f),glm::vec3(1));
+//        level.lights.push_back(light);
+//        level.entities.push_back(light);
+
+        auto *light1 = new LightSource(glm::vec3(3.5f, 0.f, 3.f), glm::vec3(1.f, 0.f, 0.f), 32);
+        level.lights.push_back(light1);
+        level.entities.push_back(light1);
+
+        auto *light2 = new LightSource(glm::vec3(-3.5f, 0.f, 3.f), glm::vec3(0.f, 0.f, 1.f), 32);
+        level.lights.push_back(light2);
+        level.entities.push_back(light2);
 
         // Ball
         actorLightingMaterial material(glm::vec3(0.5f, 0.f, 0.5f),
                                        glm::vec3(0.1f),
-                                       glm::vec3(0.0f),
+                                       glm::vec3(0.f),
                                        50.f);
 
-        auto *ball = new Sphere({ 0.f, 1.f, 0.f },
+        auto *ball = new Sphere({ 0.f, 0.f, 0.f },
                                 material,
-                                1.f);
+                                2.f);
         level.actors.push_back(ball);
         level.entities.push_back(ball);
 
